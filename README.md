@@ -59,8 +59,7 @@ against the `main` branch.
 
 Write a client report summarizing your comments and proposal for the case. This
 portion is at most 3 pages (excluding any carefully chosen tables or figure), or
-approximately 1000-1500 words. Consult the included <`RUBRIC.md`> as a general 
-guide (similar to HW 1).
+approximately 1000-1500 words. 
 
 1. You must submit your Part 1 via a Pull Request against `main` (from the 
 `part1` branch). That means that you do your individual work directly there, or,
