@@ -18,7 +18,7 @@ how to fix it yourself.
 
 ### Best practices
 
-* Write in a language that client can easily understand. Avoid technical 
+* Write in language that client can easily understand. Avoid technical 
 details. Use examples and figures to explain or illustrate.
 * Do not put computer code or output anywhere.
 * Explain key concepts and ideas in easy-to-understand language. Do not refer 
@@ -50,7 +50,7 @@ generates your report.
 * You may not store _any_ files in the root or your team's repo (`./`)
 * Any additional files must be in sub-directories that are nicely laid out. 
 I suggest you use sub-directories carefully, especially for long scripts
-(put these in, e.g. `code/01-exploration.R` rather than inside `main.Rmd`).
+(put these in, e.g. `./code/01-exploration.R` rather than inside `main.Rmd`).
 * Call your branch for this portion `v1.0.0`. You will submit by opening a PR
 against the `main` branch.
 * DO NOT DO ANY WORK ON THE `main` BRANCH. 
@@ -62,7 +62,7 @@ portion is at most 3 pages (excluding any carefully chosen tables or figure), or
 approximately 1000-1500 words. 
 
 1. You must submit your Part 1 via a Pull Request against `main` (from the 
-`part1` branch). That means that you do your individual work directly there, or,
+`v1.0.0` branch). That means that you do your individual work directly there, or,
 MUCH better, via pull requests into `v1.0.0` from your forks or other branches.
 1. You must send the `.pdf` to Estella  by the Part 1 deadline. This will allow 
 you to incorporate the changes for Part 2.
@@ -109,7 +109,7 @@ The goal of this part is two fold (1) incorporate the suggestions from Me, the
 peer-reviews, and Estella into your 3 page Summary, (2) complete the analysis
 and add a Statistical Appendix.
 
-The Appendix may be at most 7 pages. Choose judiciously. Size figures reasonably.
+The Appendix may be at most 5 pages. Choose judiciously. Size figures reasonably.
 
 An additional, final page, should be used to list the names of group members, 
 with a concise description of the contributions each group member makes to the
@@ -150,13 +150,13 @@ what you did.
 * Comment on individual lines as well as providing overall assessments.
 * "Approve" the PR to indicate that you are done.
 * Don't just echo the comments of the other reviewers.
+* You may also comment on organization, code in other files, formatting, etc.
 * Please consider the following criteria for peer evaluation: 
-  a. If you were a non-statistican client, can you understand the report easily?
-  a. Are you convinced by the author’s explanations? 
-  a. Is the writing clear and easy to follow? Any writing problems or typos or grammar errors? 
+  1. If you were a non-statistican client, can you understand the report easily?
+  1. Are you convinced by the author’s explanations? 
+  1. Is the writing clear and easy to follow? Any writing problems or typos or grammar errors? 
   
 ### Grade, 5 points
 
 * You will be scored based on the above criteria. 
 * Only the _best_ evaluators are likely to receive full marks.
-a
