@@ -1,6 +1,8 @@
 ---
 title: "What is the best way to promote zero calories beverages?"
-format: pdf
+format: 
+  pdf:
+    fontsize: 11pt
 editor: visual
 ---
 
@@ -16,18 +18,13 @@ editor: visual
 
 
 
+
 ## Formal analysis
 This section outlines general strategies for quantifying and comparing the impacts of five different interventions on the consumption of zero-calorie beverages across three sites. 
 
-We recommend implementing Linear mixed model (LMM) to approach the problems. LMMs are particularly suitable due to their ability to incorporate both fixed effects (parameters representative of the entire population, which are typically the primary variables of interest) and random effects(parameters that vary across different hierarchical levels of the data, such as individual variability or other group effects). In this study, the parameters of interest are the effectss of the interventions, while the covariates include sites, days of the week, time, and total daily beverage consumption. A further advantage of linear mixed models is that they naturally handle data that are missing at random. Informed by exploratory analysis, our dataset contains missing information on the purchases of zero-calorie beverages, sugary beverages, and total beverages, with only one missing record during the intervention. Thereby, missing at random is a valid assumption and LMM ensures a more robust results.
+It is recommended to implement Linear mixed model (LMM) to approach the problems. A LMM is a statistical model that can incorporate both fixed effects and random effects. In particular, the fixed effects are typically the primary variables of interests that are representative of the entire population. On the other hand, the random effects are parameters that vary across different hierarchical levels of the data, such as individual variability or other group effects. 
 
-
-
-
-model
-
-
-expected result
+In this study, the primary focus is to analyze the effects of the interventions, and therefore it is suggested to put $Intervention$ as fixed effect. In addition, including covariates such as sites, days of the week, time, and total dailiy beverage consumption in the model allows for a more comprehensive understanding of the intervention effects. These covariates control for variability that might influence beverage consumption patterns. For instance, site differences (which is another statistical question of interest) may impact purchasing behavior due to demographic variations. Similarly, as informed by the exploratory analysis, beverage sales fluctuate intensely based on the day of the week or time. Finally, accounting for total daily beverage consumption helps isolate the specific effect of interventions on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact, controlling for external factors.
 
 
 ## Conclusions
