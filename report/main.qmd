@@ -26,6 +26,8 @@ It is recommended to implement Linear mixed model (LMM) to approach the problems
 
 In this study, the primary focus is to analyze the effects of the interventions, and therefore it is suggested to put $Intervention$ as fixed effect. In addition, including covariates such as sites, days of the week, time, and total dailiy beverage consumption in the model allows for a more comprehensive understanding of the intervention effects. These covariates control for variability that might influence beverage consumption patterns. For instance, site differences (which is another statistical question of interest) may impact purchasing behavior due to demographic variations. Similarly, as informed by the exploratory analysis, beverage sales fluctuate intensely based on the day of the week or time. Finally, accounting for total daily beverage consumption helps isolate the specific effect of interventions on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact, controlling for external factors.
 
+Hence, the proposed models are $ZeroCal \sim Intervention + Count + DofW + Site + Total$ and $Sugary \sim Intervention + Count + DofW + Site + Total$, where $Intervention$ is treated as fixed effect, and the other as covariates. Specifically, the coefficients for $Intervention$ measures the effects of corresponding interventions to the response variables, while controlling the covariates in the model. Interpreting the coefficients for $Intervention$ is crucial for answering the statistical question.
+
 
 ## Conclusions
 
