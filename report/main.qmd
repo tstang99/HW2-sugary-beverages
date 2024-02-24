@@ -17,9 +17,15 @@ editor: visual
 
 
 ## Formal analysis
+This section outlines general strategies for quantifying and comparing the impacts of five different interventions on the consumption of zero-calorie beverages across three sites. 
+
+We recommend implementing Linear mixed model (LMM) to approach the problems. LMMs are particularly suitable due to their ability to incorporate both fixed effects (parameters representative of the entire population, which are typically the primary variables of interest) and random effects(parameters that vary across different hierarchical levels of the data, such as individual variability or other group effects). In this study, the parameters of interest are the effectss of the interventions, while the covariates include sites, days of the week, time, and total daily beverage consumption. A further advantage of linear mixed models is that they naturally handle data that are missing at random. Informed by exploratory analysis, our dataset contains missing information on the purchases of zero-calorie beverages, sugary beverages, and total beverages, with only one missing record during the intervention. Thereby, missing at random is a valid assumption and LMM ensures a more robust results.
+
+
+
+
 model
 
-why the model (why covariates)
 
 expected result
 
