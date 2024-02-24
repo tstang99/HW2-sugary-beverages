@@ -21,4 +21,4 @@ There are missing data in this dataset. The majority of missing data comes from 
 
 ## Conclusion
 
-We recommend using a linear mixed-effects model with our response being either ZeroCal or Sugary. Our fixed-effect explanatory variables are intervention and DofW, and our random-effect explanatory variables are Site and Total.
+We recommend using a linear mixed-effects model and fitting two models. The first model uses ZeroCal as a response variable. Our fixed-effect explanatory variables are intervention and DofW, and our random-effect explanatory variables are Site and Total. This model will be useful to assess any association between our explanatory variables and ZeroCal. The second model uses Sugary as a response variable, with the same setup as the previous model. The second model will be ideal for demonstrating any association between the explanatory variables and Sugary.
