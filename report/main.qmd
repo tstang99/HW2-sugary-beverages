@@ -4,23 +4,24 @@ format: html
 editor: visual
 ---
 
-## Quarto
+## 3. Exploratory Data Analysis
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
+```{r, echo=FALSE, results='hide'}
+library(here)
+library(dplyr)
+data <- read_csv(here("rawdata/june1data.csv"))
+data <- filter(data, Total > 0) 
+data <- data[,-c(7,8,9)]
 ```
 
-You can add options to executable code like this
+Specific to the statistical questions listed in introduction, the following exploratory data analysis procedures are suggested. Firstly, since how consumption of zero calories beverage is affected by site is of interest of study, a "sphagetti plot", which generally refers to a plot showing the changes of multiple flows over time, is suggested to visualize how zero calories consumption changes in different locations, and an example plot is as following:
 
-```{r}
-#| echo: false
-2 * 2
+```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}plotting example"}
+library(ggplot2)
+ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
+  geom_point()+
+  geom_line()+
+  labs(x="Days of Experiment", y="Bottles of Consumption",
+       title="The Sphagetti Plot of Zero Calories Beverage Consumption Against Time")+
+  theme(plot.title=element_text(hjust=0.5))
 ```
-
-The `echo: false` option disables the printing of code (only output is displayed).
