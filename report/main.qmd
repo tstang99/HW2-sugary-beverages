@@ -2,18 +2,21 @@
 title: "What is the best way to promote zero calorie beverage"
 format: pdf
 editor: visual
+fontsize: 12pt
 ---
 
 ## Introduction
 
-Zero calorie beverages are healthier compared to sugared beverages because they contain less sugar and way less calories. Over the past decades, hospitals have been striving to promote zero-calorie beverages for a healthier lifestyle. This study employs five interventions to help increase such promotion. These interventions include a 10% price discount, a price discount combined with messaging that explains the reason for the discount, messaging displaying the caloric content in sugared beverages, messaging indicating the amount of exercise needed to burn off the calories in a sugared beverage, and messaging containing both caloric content and the amount of physical activity needed.
+Zero calorie beverages are healthier compared to sugared beverages because they contain less sugar and significantly fewer calories. Over the past decades, hospitals have been striving to promote zero-calorie beverages for a healthier lifestyle. This study employs five interventions to help increase such promotion. These interventions include a 10% price discount, a price discount combined with messaging that explains the reason for the discount, messaging displaying the caloric content in sugared beverages, messaging indicating the amount of exercise needed to burn off the calories in a sugared beverage, and messaging containing both caloric content and the amount of physical activity needed.
 
-The study aims to investigate whether these interventions help encourage people to choose zero-calorie beverages over sugared beverages and if such effects are consistent across hospitals. The statistical question in this context is: "Is there any association between interventions and the increase in zero-calorie beverage consumption?"
+The study aims to investigate whether these interventions help encourage people to choose zero-calorie beverages over sugared beverages and if such effects are consistent across hospitals. The primary statistical question in this context is: "Is there any association between interventions and the increase in zero-calorie beverage consumption or decrease in sugary beverage consumption?" The secondary statistical question is:"Does the effect of intervention differs by site?"
 
 ## Data description and summaries
 
-This is an observational study where data is collected over 30 weeks, from October 27 to May 23, with a follow-up period of 14 days, gathered from two urban hospitals and one suburban hospital. During this time period the sales of different type of drink are recorded.
+This is an observational study where data are collected over 30 weeks, from October 27 to May 23, with a follow-up period of 14 days, gathered from two urban hospitals and one suburban hospital. During this time period, the sales of different types of drinks are recorded.
 
-In the data, we can see count being an integer variable which indicates the number of days. DofW being a categorical variable with 7 level and it means the day of the week. Site is a categorical variable with 3 levels and it depicts which hospital. Intervention is also a categorical variable with 9 levels and it shows which intervention is applied.
+In the data, we can see count as an integer variable, indicating the number of days. DofW is a categorical variable with 7 levels, representing the day of the week. Site is a categorical variable with 3 levels, depicting which hospital the data is from. Intervention is also a categorical variable with 9 levels, indicating which intervention is applied at the time. ZeroCal, Sugary, Juice100, Ojuice, and Sports are all integer variables representing the number of drinks sold for each type. Lastly, Total is the sum of all drinks sold and is a continuous variable.
+
+There are some missing data in this dataset. The majority of missing data comes from the Juice100, Ojuice, and Sports columns, which will not be included in the model, so we can remove them. Additionally, there are 7 entirely missing consecutive entries at HF hospital during the follow-up period. This makes the assumption of missing at random valid because the hospital could be closed for construction. Other than that, there are two entirely missing entries, which are also missing at random because the hospital could be closed for a holiday.
 
 ## Conclusion
