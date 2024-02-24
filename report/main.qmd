@@ -2,7 +2,7 @@
 title: "What is the best way to promote zero calorie beverage"
 format: pdf
 editor: visual
-fontsize: 12pt
+fontsize: 11pt
 ---
 
 ## Introduction
@@ -17,6 +17,8 @@ This is an observational study where data are collected over 30 weeks, from Octo
 
 In the data, we can see count as an integer variable, indicating the number of days. DofW is a categorical variable with 7 levels, representing the day of the week. Site is a categorical variable with 3 levels, depicting which hospital the data is from. Intervention is also a categorical variable with 9 levels, indicating which intervention is applied at the time. ZeroCal, Sugary, Juice100, Ojuice, and Sports are all integer variables representing the number of drinks sold for each type. Lastly, Total is the sum of all drinks sold and is a continuous variable.
 
-There are some missing data in this dataset. The majority of missing data comes from the Juice100, Ojuice, and Sports columns, which will not be included in the model, so we can remove them. Additionally, there are 7 entirely missing consecutive entries at HF hospital during the follow-up period. This makes the assumption of missing at random valid because the hospital could be closed for construction. Other than that, there are two entirely missing entries, which are also missing at random because the hospital could be closed for a holiday.
+There are missing data in this dataset. The majority of missing data comes from the Juice100, Ojuice, and Sports columns, which will not be included in the model, so we can remove them. Additionally, there are 7 entirely missing consecutive entries at HF hospital during the follow-up period. This makes the assumption of missing at random valid because the hospital could be closed for construction. Other than that, there are two entirely missing entries, which are also missing at random because the hospital could be closed for a holiday.
 
 ## Conclusion
+
+We recommend using a linear mixed-effects model with our response being either ZeroCal or Sugary. Our fixed-effect explanatory variables are intervention and DofW, and our random-effect explanatory variables are Site and Total.
