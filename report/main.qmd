@@ -8,15 +8,16 @@ editor: visual
 
 ```{r, echo=FALSE, results='hide'}
 library(here)
+library(readr)
 library(dplyr)
 data <- read_csv(here("rawdata/june1data.csv"))
 data <- filter(data, Total > 0) 
 data <- data[,-c(7,8,9)]
 ```
 
-Specific to the statistical questions listed in introduction, the following exploratory data analysis procedures are suggested. Firstly, since how consumption of zero calories beverage is affected by site is of interest of study, a "sphagetti plot", which generally refers to a plot showing the changes of multiple flows over time, is suggested to visualize how zero calories consumption changes in different locations, and an example plot is as following:
+Specific to the statistical questions listed in introduction, the following exploratory data analysis procedures are suggested. Firstly, since how consumption of zero calories beverage is affected by site is of interest of study, a "sphagetti plot", which generally refers to a plot showing the changes of multiple flows over time, is suggested to visualize how zero calories consumption changes in different locations; 
 
-```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}plotting example"}
+```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Try"}
 library(ggplot2)
 ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
   geom_point()+
