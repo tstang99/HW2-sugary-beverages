@@ -6,7 +6,7 @@ editor: visual
 
 ## 3. Exploratory Data Analysis
 
-```{r, echo=FALSE, results='hide'}
+```{r, include=FALSE}
 library(here)
 library(readr)
 library(dplyr)
@@ -25,11 +25,15 @@ ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
   labs(x="Days of Experiment", y="Bottles of Consumption",
        title="The Sphagetti Plot of Zero Calories Beverage Consumption Against Time")+
   theme(plot.title=element_text(hjust=0.5))
+
 example_data <- data |> filter(Intervention %in% 
                                  c("cal", "dismes", "preint"))
+
 ggplot(data=example_data, aes(x=Intervention, y=ZeroCal))+
   geom_boxplot(outlier.colour="red", outlier.shape=8,
                 outlier.size=4)+
   labs(x="Interventions", y="Bottles of Consumption",
-       title="The Box-plot of Zero Calories Beverage Consumtion Against Time")
+       title="The Box-plot of Zero Calories Beverage Consumtion Against Time")+
+  theme(plot.title=element_text(hjust=0.5))
 ```
+From the two plots, we can clearly see that the time-series data of zero calories beverage consumption in Site=chop is pretty different from the consumption in the other two sites, and the distributions of consumption may vary alot under different interventions. Besides, there are two things to note. First of all, according to the spaghetti plot, except for the beginning period for Site=HF, there is no apparent trend in all three sites, but there is strong periodic variations, which implies that it is reasonable including DofW into covariates and removing count, since long term averages seems to be stable. Secondly, based on the box-plot, there are many outliers for Intervention=cal. Usually, researchers may consider to drop outliers since they have significant impact on model fitting, but since here outliers form a cluster approximately, removing outliers can be subtle here, it is recommended that outliers are retained.
