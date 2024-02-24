@@ -15,9 +15,9 @@ data <- filter(data, Total > 0)
 data <- data[,-c(7,8,9)]
 ```
 
-Specific to the statistical questions listed in introduction, the following exploratory data analysis procedures are suggested. Firstly, since how consumption of zero calories beverage is affected by site is of interest of study, a "sphagetti plot", which generally refers to a plot showing the changes of multiple flows over time, is suggested to visualize how zero calories consumption changes in different locations; 
+Specific to the statistical questions listed in introduction, the following exploratory data analysis procedures are suggested. Firstly, since how consumption of zero calories beverage is affected by site is of interest of study, a "spaghetti plot", which generally refers to a plot showing the changes of multiple flows over time, is suggested to visualize how zero calories consumption changes in different locations; meanwhile, for the primary statistical question, which is how different interventions would affect the consumption of zero calories beverage, it is suggested to use box-plot to check the distributions of the consumption under different interventions as a preview. Examples of a spaghetti plot and a box-plot is given below, and note that for convenience only three interventions are used in the example box-plot. 
 
-```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Try"}
+```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Example of Sphagetti Plot and Box Plot"}
 library(ggplot2)
 ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
   geom_point()+
@@ -25,4 +25,11 @@ ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
   labs(x="Days of Experiment", y="Bottles of Consumption",
        title="The Sphagetti Plot of Zero Calories Beverage Consumption Against Time")+
   theme(plot.title=element_text(hjust=0.5))
+example_data <- data |> filter(Intervention %in% 
+                                 c("cal", "dismes", "preint"))
+ggplot(data=example_data, aes(x=Intervention, y=ZeroCal))+
+  geom_boxplot(outlier.colour="red", outlier.shape=8,
+                outlier.size=4)+
+  labs(x="Interventions", y="Bottles of Consumption",
+       title="The Box-plot of Zero Calories Beverage Consumtion Against Time")
 ```
