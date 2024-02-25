@@ -1,0 +1,94 @@
+---
+title: "What is the best way to promote zero calories beverages?"
+format: 
+  pdf:
+    fontsize: 11pt
+editor: visual
+author: Ivy Liu, Zefan Liu, Tom Tang
+---
+
+## Introduction
+Zero calorie beverages are healthier compared to sugared beverages because they contain less sugar and significantly fewer calories. Over the past decades, hospitals have been striving to promote zero-calorie beverages for a healthier lifestyle. This study employs five interventions to help increase such promotion. These interventions include a 10% price discount, a price discount combined with messaging that explains the reason for the discount, messaging displaying the caloric content in sugared beverages, messaging indicating the amount of exercise needed to burn off the calories in a sugared beverage, and messaging containing both caloric content and the amount of physical activity needed.
+
+The study aims to investigate whether these interventions help encourage people to choose zero-calorie beverages over sugared beverages and if such effects are consistent across hospitals. The primary statistical question in this context is: "Is there any association between interventions and the increase in zero-calorie beverage consumption or decrease in sugary beverage consumption?" The secondary statistical question is:"Does the effect of intervention differs by site?"
+
+## Data description and summaries
+
+This is an experimental design where data are collected over 30 weeks, from October 27 to May 23, with a follow-up period of 14 days, gathered from two urban hospitals and one suburban hospital. During this time period, the sales of different types of drinks are recorded.
+
+| Data Name    | Data Type   | Data Description                       |
+|--------------|-------------|----------------------------------------|
+| Count        | Integer     | The number of days                     |
+| DofW         | Categorical | The day of the week, 7 levels          |
+| Site         | Categorical | The location of the hospital, 3 levels |
+| Intervention | Categorical | The intervention applied, 9 levels     |
+| ZeroCal      | Integer     | The number of zero calorie drink sold  |
+| Sugary       | Integer     | The number of sugary drink sold        |
+| Juice100     | Integer     | The number of Juice100 sold            |
+| Ojuice       | Integer     | The number of Ojuice sold              |
+| Sports       | Integer     | The number of sports drink sold        |
+| Total        | Continuous  | The sum of all drink sold              |
+
+There are missing data in this dataset. The majority of missing data comes from the Juice100, Ojuice, and Sports columns, which will not be included in the model, so we can remove them. Additionally, there are 7 entirely missing consecutive entries at HF hospital during the follow-up period. This makes the assumption of missing at random valid because the hospital could be closed for construction. Other than that, there are two entirely missing entries, which are also missing at random because the hospital could be closed for a holiday.
+
+
+## Exploratory Data Analysis
+
+```{r, include=FALSE}
+library(here)
+library(readr)
+library(dplyr)
+data <- read_csv(here("rawdata/june1data.csv"))
+data <- filter(data, Total > 0) 
+data <- data[,-c(7,8,9)]
+```
+
+Specific to the statistical questions listed in introduction, the following exploratory data analysis procedures are suggested. Firstly, since how consumption of zero calories beverage is affected by site is of interest of study, a "spaghetti plot", which generally refers to a plot showing the changes of multiple flows over time, is suggested to visualize how zero calories consumption changes in different locations; meanwhile, for the primary statistical question, which is how different interventions would affect the consumption of zero calories beverage, it is suggested to use box-plot to check the distributions of the consumption under different interventions as a preview. Examples of a spaghetti plot and a box-plot is given below, and note that for convenience only three interventions are used in the example box-plot. 
+
+```{r, echo=FALSE}
+library(ggplot2)
+library(cowplot)
+p1=ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
+  geom_point()+
+  geom_line()+
+  labs(x="Days of Experiment", y="Bottles of Consumption",
+       title="Spaghetti Plot")+
+  theme(plot.title=element_text(hjust=0.5))
+
+example_data <- data |> filter(Intervention %in% 
+                                 c("cal", "dismes", "preint"))
+
+p2=ggplot(data=example_data, aes(x=Intervention, y=ZeroCal))+
+  geom_boxplot(outlier.colour="red", outlier.shape=8,
+                outlier.size=4)+
+  labs(x="Interventions", y="Bottles of Consumption",
+       title="Box Plot")+
+  theme(plot.title=element_text(hjust=0.5),
+        legend.position="top")
+
+plot_grid(p1,p2, ncol=2)
+```
+From the two plots, we can clearly see that the time-series data of zero calories beverage consumption in Site=chop is pretty different from the consumption in the other two sites, and the distributions of consumption may vary alot under different interventions. Besides, there are two things to note. First of all, according to the spaghetti plot, except for the beginning period for Site=HF, there is no apparent trend in all three sites, but there is strong periodic variations, which implies that it is reasonable including DofW into covariates and removing count, since long term averages seems to be stable. Secondly, based on the box-plot, there are many outliers for Intervention=cal. Usually, researchers may consider to drop outliers since they have significant impact on model fitting, but since here outliers form a cluster approximately, removing outliers can be subtle here, it is recommended that outliers are retained.
+
+
+
+## Formal analysis
+This section outlines general strategies for quantifying and comparing the impacts of five different interventions on the consumption of zero-calorie and sugary beverages across three sites. 
+
+It is recommended to implement Linear mixed model (LMM) to approach the problems. A LMM is a statistical model that can incorporate both fixed effects and random effects. In particular, the fixed effects are typically the primary variables of interests that are representative of the entire population. On the other hand, the random effects are parameters that vary across different hierarchical levels of the data, such as individual variability or other group effects. 
+
+In this study, the primary focus is to analyze the effects of the interventions, and therefore it is suggested to put intervention as fixed effect. In addition, days of the week should also be treated as fixed effect because the weekly fluctuation applies to the all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to also include sites and total dailiy beverage consumption as random effects in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which is the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact, controlling for external factors.
+
+Hence, the proposed models are $ZeroCal \sim Intervention + DofW + Count + Site + Total$ and $Sugary \sim Intervention + DofW + Count + Site + Total$, where $Intervention$ and $DofW$ are treated as fixed effects, and the others as random effects. Specifically, the coefficients for $Intervention$ measures the effects of corresponding interventions to the response variables, while controlling the covariates in the model. Interpreting the coefficients for $Intervention$ is crucial for answering the statistical question.
+
+
+## Conclusions
+We recommend using a linear mixed-effects model and fitting two models. The first model uses ZeroCal as a response variable. Our fixed-effect explanatory variables are intervention and DofW, and our random-effect explanatory variables are Site and Total. This model will be useful to assess any association between our explanatory variables and ZeroCal. The second model uses Sugary as a response variable, with the same setup as the previous model. The second model will be ideal for demonstrating any association between the explanatory variables and Sugary.
+
+
+
+## References
+
+
+
+## Statistical Appendix
