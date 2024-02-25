@@ -24,7 +24,7 @@ p1=ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
   geom_point()+
   geom_line()+
   labs(x="Days of Experiment", y="Bottles of Consumption",
-       title="The Sphagetti Plot of Zero Calories Beverage Consumption Against Time")+
+       title="Spaghetti Plot")+
   theme(plot.title=element_text(hjust=0.5))
 
 example_data <- data |> filter(Intervention %in% 
@@ -34,8 +34,9 @@ p2=ggplot(data=example_data, aes(x=Intervention, y=ZeroCal))+
   geom_boxplot(outlier.colour="red", outlier.shape=8,
                 outlier.size=4)+
   labs(x="Interventions", y="Bottles of Consumption",
-       title="The Box-plot of Zero Calories Beverage Consumtion Against Time")+
-  theme(plot.title=element_text(hjust=0.5))
+       title="Box Plot")+
+  theme(plot.title=element_text(hjust=0.5),
+        legend.position="top")
 
 plot_grid(p1,p2, ncol=2)
 ```
