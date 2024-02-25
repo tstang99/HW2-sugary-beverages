@@ -4,6 +4,7 @@ format:
   pdf:
     fontsize: 11pt
 editor: visual
+author: Ivy Liu, Zefan Liu, Tom Tang
 ---
 
 ## Introduction
@@ -18,13 +19,12 @@ editor: visual
 
 
 
-
 ## Formal analysis
-This section outlines general strategies for quantifying and comparing the impacts of five different interventions on the consumption of zero-calorie beverages across three sites. 
+This section outlines general strategies for quantifying and comparing the impacts of five different interventions on the consumption of zero-calorie and sugary beverages across three sites. 
 
 It is recommended to implement Linear mixed model (LMM) to approach the problems. A LMM is a statistical model that can incorporate both fixed effects and random effects. In particular, the fixed effects are typically the primary variables of interests that are representative of the entire population. On the other hand, the random effects are parameters that vary across different hierarchical levels of the data, such as individual variability or other group effects. 
 
-In this study, the primary focus is to analyze the effects of the interventions, and therefore it is suggested to put intervention as fixed effect. In addition, days of the week should also be treated as fixed effect because the seasonal fluctuation applies to the all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to also include sites and total dailiy beverage consumption as random effects in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which is the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact, controlling for external factors.
+In this study, the primary focus is to analyze the effects of the interventions, and therefore it is suggested to put intervention as fixed effect. In addition, days of the week should also be treated as fixed effect because the weekly fluctuation applies to the all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to also include sites and total dailiy beverage consumption as random effects in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which is the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact, controlling for external factors.
 
 Hence, the proposed models are $ZeroCal \sim Intervention + DofW + Count + Site + Total$ and $Sugary \sim Intervention + DofW + Count + Site + Total$, where $Intervention$ and $DofW$ are treated as fixed effects, and the others as random effects. Specifically, the coefficients for $Intervention$ measures the effects of corresponding interventions to the response variables, while controlling the covariates in the model. Interpreting the coefficients for $Intervention$ is crucial for answering the statistical question.
 
