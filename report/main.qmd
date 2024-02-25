@@ -15,7 +15,43 @@ author: Ivy Liu, Zefan Liu, Tom Tang
 
 
 
-## Exploratory analysis
+## Exploratory Data Analysis
+
+```{r, include=FALSE}
+library(here)
+library(readr)
+library(dplyr)
+data <- read_csv(here("rawdata/june1data.csv"))
+data <- filter(data, Total > 0) 
+data <- data[,-c(7,8,9)]
+```
+
+Specific to the statistical questions listed in introduction, the following exploratory data analysis procedures are suggested. Firstly, since how consumption of zero calories beverage is affected by site is of interest of study, a "spaghetti plot", which generally refers to a plot showing the changes of multiple flows over time, is suggested to visualize how zero calories consumption changes in different locations; meanwhile, for the primary statistical question, which is how different interventions would affect the consumption of zero calories beverage, it is suggested to use box-plot to check the distributions of the consumption under different interventions as a preview. Examples of a spaghetti plot and a box-plot is given below, and note that for convenience only three interventions are used in the example box-plot. 
+
+```{r, echo=FALSE}
+library(ggplot2)
+library(cowplot)
+p1=ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
+  geom_point()+
+  geom_line()+
+  labs(x="Days of Experiment", y="Bottles of Consumption",
+       title="Spaghetti Plot")+
+  theme(plot.title=element_text(hjust=0.5))
+
+example_data <- data |> filter(Intervention %in% 
+                                 c("cal", "dismes", "preint"))
+
+p2=ggplot(data=example_data, aes(x=Intervention, y=ZeroCal))+
+  geom_boxplot(outlier.colour="red", outlier.shape=8,
+                outlier.size=4)+
+  labs(x="Interventions", y="Bottles of Consumption",
+       title="Box Plot")+
+  theme(plot.title=element_text(hjust=0.5),
+        legend.position="top")
+
+plot_grid(p1,p2, ncol=2)
+```
+From the two plots, we can clearly see that the time-series data of zero calories beverage consumption in Site=chop is pretty different from the consumption in the other two sites, and the distributions of consumption may vary alot under different interventions. Besides, there are two things to note. First of all, according to the spaghetti plot, except for the beginning period for Site=HF, there is no apparent trend in all three sites, but there is strong periodic variations, which implies that it is reasonable including DofW into covariates and removing count, since long term averages seems to be stable. Secondly, based on the box-plot, there are many outliers for Intervention=cal. Usually, researchers may consider to drop outliers since they have significant impact on model fitting, but since here outliers form a cluster approximately, removing outliers can be subtle here, it is recommended that outliers are retained.
 
 
 
@@ -38,6 +74,3 @@ Hence, the proposed models are $ZeroCal \sim Intervention + DofW + Count + Site 
 
 
 ## Statistical Appendix
-
-
-
