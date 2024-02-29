@@ -85,7 +85,7 @@ ZeroCal & \sim Intervention + DofW + Site + Total\\
 Sugary & \sim Intervention + DofW + Site + Total,
 \end{align*} where $Site$ is treated as random effect, and the others as fixed effects. Specifically, the coefficients for $Intervention$ measures the effects of corresponding interventions to the response variables, while controlling the covariates in the model. Interpreting the coefficients for $Intervention$ is crucial for answering the statistical questions.
 
-However, there are several limitations to the above models. Primarily, the linear mixed model does not accommodate the serial dependence in time series data. Moreover, like all statistical models, LMMs are based on underlying assumptions, such as normality of the residuals, homoscedasticity (constant variance), and independence of the random effects and residuals. It is advised to perform diagnostic tests for the models and check if these assumptions are met in the data.
+However, there are several limitations to the models mentioned above. Primarily, Linear Mixed Models (LMMs) do not accommodate autocorrelation in time series data, which refers to the dependence between consecutive observations. Moreover, LMMs are based on underlying assumptions, including the normality of residuals, homoscedasticity (constant variance), and independence between the random effects and residuals. Therefore, it is advisable to perform diagnostic tests for the models to verify if these assumptions hold in the data.
 
 ## Conclusions
 
