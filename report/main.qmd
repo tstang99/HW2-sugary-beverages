@@ -11,7 +11,7 @@ author: Ivy Liu, Zefan Liu, Tom Tang
 
 Zero calorie beverages are healthier compared to sugared beverages because they contain less sugar and significantly fewer calories. Over the past decades, hospitals have been striving to promote zero-calorie beverages for a healthier lifestyle. This study employs five interventions to help increase such promotion. These interventions include a 10% price discount, a price discount combined with messaging that explains the reason for the discount, messaging displaying the caloric content in sugared beverages, messaging indicating the amount of exercise needed to burn off the calories in a sugared beverage, and messaging containing both caloric content and the amount of physical activity needed.
 
-The study aims to investigate whether these interventions help encourage people to choose zero-calorie beverages over sugared beverages and if such effects are consistent across hospitals. The primary statistical question in this context is: "Is there any association between interventions and the increase in zero-calorie beverage consumption or decrease in sugary beverage consumption?" The secondary statistical question is:"Does the effect of intervention differs by site?"
+The study aims to investigate whether these interventions help encourage people to choose zero calorie beverages over sugared beverages and if such effects are consistent across hospitals. The primary statistical question in this context is: "Is there any association between interventions and the increase in zero calorie beverage consumption or decrease in sugary beverage consumption?" The secondary statistical question is:"Does the effect of intervention differs by site?"
 
 ## Data description and summaries
 
@@ -30,7 +30,7 @@ This is an experimental design where data are collected over 30 weeks, from Octo
 | Sports       | Integer     | The number of sports drink sold        |
 | Total        | Continuous  | The sum of all drink sold              |
 
-There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. These columns will not be included in the model because of their irrelevancy, so the missing entries in these columns will not affect the statistical analysis. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period. The pattern of these absences does not violate the 'missing at random' (MAR) assumption, suggesting a plausible scenario such as hospital closure for renovation. Apart from these, there are two isolated cases of missing entries. These, too, align with the MAR assumption and can be reasonably attributed to temporary hospital closures for public holidays.
+There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. These columns will not be included in the model because of their irrelevancy, so the missing entries in these columns will not affect the statistical analysis. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period. This is possible due to the hospital's cafeteria and convenient shop close down for renovation. Apart from these, there are two isolated cases of missing entries. These can be reasonably attributed to temporary closures for public holidays.
 
 ## Exploratory Data Analysis
 
