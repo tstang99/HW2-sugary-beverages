@@ -43,7 +43,7 @@ data <- filter(data, Total > 0)
 data <- data[,-c(7,8,9)]
 ```
 
-Specific to the statistical questions listed in introduction, the following exploratory data analysis procedures are suggested. Firstly, in order to address the influence of location on zero-calorie beverage consumption---which is of primary interest to the study---a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time, which is adept at showing the evolution of zero-calorie beverage consumption over time, and how it varies across the three sites. Meanwhile, to approach the primary statistical question concerning the impact of different interventions on zero-calorie beverage consumption, boxplots can be drawn. Boxplots enable a preliminary check of consumption distributions under various interventions. Illustrated below are examples of a spaghetti plot and a boxplot (note that for demonstration purpose, only three interventions are included in the example boxplot).
+Specific to the statistical questions listed in the introduction, the following exploratory data analysis procedures are suggested. Firstly, in order to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how it varies across the three sites. Meanwhile, it is recommended to use boxplots to approach the primary statistical question concerning the impact of different interventions on zero-calorie and sugary beverage consumption. Boxplots enable a preliminary check of consumption distributions under various interventions. Illustrated below are examples of a spaghetti plot and a boxplot (note that for demonstration purposes, only three interventions are included in the example boxplot).
 
 ```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Examples of Recommended EDA Plots"}
 library(ggplot2)
@@ -92,7 +92,6 @@ We recommend using a linear mixed-effects model and fitting two models. The firs
 
 $$
 zero\_calorie_{ij} = (\beta_0 + b_{0i}) + (\beta_1 + b_{1i}) \;  site + \beta_2 \; Intervention + \beta_3 \; DofW + \beta_4 \; Total
-$$ 
-$$
+$$ $$
 sugary_{ij} = (\beta_0 + b_{0i}) + (\beta_1 + b_{1i}) \;  site + \beta_2 \; Intervention + \beta_3 \; DofW + \beta_4 \; Total
 $$
