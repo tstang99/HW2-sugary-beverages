@@ -4,7 +4,7 @@ format:
   pdf:
     fontsize: 11pt
 editor: visual
-bibliography: ../references/references.bib
+bibliography: ../reference/reference.bib
 author: Ivy Liu, Zefan Liu, Tom Tang
 ---
 
@@ -93,8 +93,9 @@ However, there are several limitations to the models mentioned above. Firstly, G
 We recommend using GLMMs to fit the relationship between covariates and response variables. Based on different research interests, response variable should be either ZeroCal beverage consumption or sugary beverage consumption. The fixed-effect explanatory variables suggested are intervention, Total and DofW, and the random-effect explanatory variable is Site.
 
 ## References
-:::: {#refs}
-::::
+
+::: {#refs}
+:::
 
 ## Statistical Appendix
 
