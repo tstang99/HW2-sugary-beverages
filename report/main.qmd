@@ -43,7 +43,7 @@ data <- filter(data, Total > 0)
 data <- data[,-c(7,8,9)]
 ```
 
-Specific to the statistical questions listed in the introduction, the following exploratory data analysis procedures are suggested. Firstly, in order to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how it varies across the three sites. Meanwhile, it is recommended to use boxplots to approach the primary statistical question concerning the impact of different interventions on zero-calorie and sugary beverage consumption. Boxplots enable a preliminary check of consumption distributions under various interventions. Illustrated below are examples of a spaghetti plot and a boxplot (note that for demonstration purposes, only three interventions are included in the example boxplot).
+Specific to the statistical questions listed in the introduction, the following exploratory data analysis procedures are suggested. Firstly, in order to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how it varies across the three sites. Meanwhile, it is recommended to use box-plots to approach the primary statistical question concerning the impact of different interventions on zero-calorie and sugary beverage consumption. Box-plots enable a preliminary check of consumption distributions under various interventions. Illustrated below are examples of a spaghetti plot and a box-plots (note that for demonstration purposes, only three interventions are included in the example box-plots).
 
 ```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Examples of Recommended EDA Plots"}
 library(ggplot2)
@@ -70,35 +70,37 @@ p2=ggplot(data=example_data, aes(x=Intervention, y=ZeroCal))+
 plot_grid(p1,p2, ncol=2)
 ```
 
-Based on the two plots above, it's clear that the time-series data for zero-calorie beverage consumption at site "chop" significantly diverges from the patterns observed at the other two sites, and that the distributions of consumption may vary substantially under different interventions. Additionally, there are two observations. Firstly, the spaghetti plot reveals that except for the beginning period at site "HF", there is no apparent trend at all three sites as the long-term averages seem to be stable. However, strong weekly variations are presented, implying that it is reasonable to include the day of the week (DofW) and to exclude the time (count) in the model. Secondly, the box plot indicates the presence of many outliers during which the caloric messaging was displayed. However, the clustering nature of these outliers tells valuable information. Therefore, it is advised that outliers be retained in the analysis to reflect the true variability inherent in the intervention's effects.
+Based on the two plots above, it's clear that the time-series data for zero-calorie beverage consumption at site "chop" significantly diverges from the patterns observed at the other two sites, and that the distributions of consumption may vary substantially under different interventions. Additionally, there are two observations. Firstly, the spaghetti plot reveals that except for the beginning period at site "HF", there is no apparent trend at all three sites as the long-term averages seem to be stable. However, strong weekly variations are presented, implying that it is reasonable to include the day of the week (DofW) and to exclude the time (count) in the model. Secondly, the box-plots indicate the presence of many outliers during which the caloric messaging was displayed. However, the clustering nature of these outliers tells valuable information. Therefore, it is advised that outliers be retained in the analysis to reflect the true variability inherent in the intervention's effects.
 
 ## Formal analysis
 
 This section outlines general strategies for quantifying and comparing the impacts of five different interventions on the consumption of zero-calorie and sugary beverages across three sites.
 
-It is recommended to implement a Linear Mixed Model (LMM) to approach the problems. An LMM is a statistical model that can incorporate both fixed effects and random effects. In particular, the fixed effects are typically the primary variables of interest that are representative of the entire population, while the random effects are parameters that vary across different hierarchical levels of the data, measuring variability between individuals.
+It is recommended to implement a Generalized Linear Mixed Model (GLMM) to address the problems. A GLMM, as an extension of the Linear Mixed Model (LMM), can incorporate both fixed and random effects and also accommodate the distribution of the response variable. Specifically, while the fixed effects assess the association of covariates with the response variable across the overall population---serving as a baseline---the random effects account for how some associations may vary across different entities or individuals.
 
-In this study, the primary focus is to analyze the effects of the interventions, and therefore it is suggested to treat the intervention as a fixed effect. Additionally, days of the week should also be considered as a fixed effect because the weekly fluctuation applies to all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to include sites and total daily beverage consumption as random effects in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which are the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact, while controlling for external factors.
+In this study, the primary focus is to analyze the effects of the interventions, and therefore it is suggested to treat the intervention as a fixed effect. Additionally, days of the week should also be considered as a fixed effect because the weekly fluctuation applies to all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to include sites and total daily beverage consumption as random effects in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which are the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact, while controlling for external factors. Last but not least, given that the consumption of ZeroCal beverage is non-negative integer, using an exponential link function to guarantee a positive output is suggested.
 
 Hence, the proposed models are \begin{align*}
-ZeroCal & \sim Intervention + DofW + Site + Total\\
-Sugary & \sim Intervention + DofW + Site + Total,
-\end{align*} where $Site$ is treated as random effect, and the others as fixed effects. Specifically, the coefficients for $Intervention$ measures the effects of corresponding interventions to the response variables, while controlling the covariates in the model. Interpreting the coefficients for $Intervention$ is crucial for answering the statistical questions.
+ZeroCal & \sim Intervention(Site) + DofW + Total\\
+Sugary & \sim Intervention(Site) + DofW + Total,
+\end{align*}. Fixed effects are from Intervention, DofW and Total, and random effect measures how the effect of Intervention and baseline of consumption vary across sites. Note that the models are simplified version, especially the omission of link function, and please refer to the appendix for formulated models.
 
-However, there are several limitations to the models mentioned above. Primarily, Linear Mixed Models (LMMs) do not accommodate autocorrelation in time series data, which refers to the dependence between consecutive observations. Moreover, LMMs are based on underlying assumptions, including the normality of residuals, homoscedasticity (constant variance), and independence between the random effects and residuals. Therefore, it is advisable to perform diagnostic tests for the models to verify if these assumptions hold in the data.
+However, there are several limitations to the models mentioned above. Firstly, GLLMs do not accommodate autocorrelation in time series data, which refers to the dependence between consecutive observations. Moreover, the model proposed implicitly assumes that the response variables follow Poisson distributions, where the expectation and variability of response variables should match to each other, but it can be easily violated in practice.
 
 ## Conclusions
 
-We recommend using a LMM model and fitting two models. The first model uses ZeroCal as a response variable. Our fixed-effect explanatory variables are intervention, Total and DofW, and our random-effect explanatory variable is Site. This model will be useful to assess any association between our explanatory variables and ZeroCal. The second model uses Sugary as a response variable, with the same setup as the previous model. The second model will be ideal for demonstrating any association between the explanatory variables and Sugary.
+We recommend using GLMMs to fit the relationship between covariates and response variables. Based on different research interests, response variable should be either ZeroCal beverage consumption or sugary beverage consumption. The fixed-effect explanatory variables suggested are intervention, Total and DofW, and the random-effect explanatory variable is Site.
 
 ## References
 
 ## Statistical Appendix
 
-### Proposed Model
+### Mathematical Formulation of Models
+
+Here a formulation of Generalized Linear Mixed Model under the context of this research is provided. As we suggested above, the random effects can be placed at both slope for intervention and intercept. Taking $response = ZeroCal$ as an example, the model will take the format of
 
 $$
-zero\_calorie_{ij} = (\beta_0 + b_{0i}) + (\beta_1 + b_{1i}) \;  site + \beta_2 \; Intervention + \beta_3 \; DofW + \beta_4 \; Total + \epsilon_{ij}
-$$ $$
-sugary_{ij} = (\beta_0 + b_{0i}) + (\beta_1 + b_{1i}) \;  site + \beta_2 \; Intervention + \beta_3 \; DofW + \beta_4 \; Total + \epsilon_{ij}
+E(zero\_calorie_{ij}) = exp((\beta_0 + b_{0i}) + (\beta_1 + b_{1i}) \;  site + \beta_2 \; Intervention + \beta_3 \; DofW + \beta_4)
 $$
+
+where $b_{0i} \sim N(0,\sigma_1)$ and $b_{1i} \sim N(0,\sigma_2)$. Both $\sigma_1$ and $\sigma_2$ can be estimated using data, and $zero\_calorie_{ij}$ is assumed to have poisson distribution where its expectation should be equal to its variance. When such an assumption is violated, usually a quasi maximum likelihood estimation is used.
