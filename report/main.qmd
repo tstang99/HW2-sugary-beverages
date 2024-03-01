@@ -4,7 +4,7 @@ format:
   pdf:
     fontsize: 11pt
 editor: visual
-bibliography: reference.bib
+bibliography: ../references/references.bib
 author: Ivy Liu, Zefan Liu, Tom Tang
 ---
 
