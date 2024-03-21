@@ -16,12 +16,12 @@ The study aims to investigate whether these interventions help encourage people 
 
 ## Data description and summaries
 
-This is an experimental design where data are collected over 30 weeks, from October 27 to May 23, with a follow-up period of 14 days, gathered from two urban hospitals and one suburban hospital. During this time period, the sales of different types of drinks are recorded (see table \ref{tab:variables}).
+This is an experimental design where data are collected over 30 weeks, from October 27 to May 23, with a follow-up period of 14 days, gathered from two urban hospitals and one suburban hospital. During this time period, the sales of different types of drinks are recorded (see Table \ref{tab1}).
 
 \begin{table}[htbp]
     \centering
     \caption{Summary of data}
-    \label{tab:variables}
+    \label{tab1}
     \begin{tabular}{ c|c|c }
         \hline
         Data Name & Data Type & Data Description \\
@@ -52,7 +52,7 @@ data <- filter(data, Total > 0)
 data <- data[,-c(7,8,9)]
 ```
 
-Specific to the statistical questions listed in the introduction, the following exploratory data analysis [@tukey1977exploratory] procedures are suggested. Firstly, in order to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how it varies across the three sites. Meanwhile, it is recommended to use box-plots to approach the primary statistical question concerning the impact of different interventions on zero-calorie and sugary beverage consumption. Box-plots enable a preliminary check of consumption distributions under various interventions. Illustrated below are examples of a spaghetti plot and a box-plots (note that for demonstration purposes, only three interventions are included in the example box-plots).
+Specific to the statistical questions listed in the introduction, the following exploratory data analysis [@tukey1977exploratory] procedures are suggested. Firstly, in order to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how it varies across the three sites. Meanwhile, it is recommended to use box-plots to approach the primary statistical question concerning the impact of different interventions on zero-calorie and sugary beverage consumption. Box-plots enable a preliminary check of consumption distributions under various interventions. Illustrated below in figure \ref{fig:figs} are examples of a spaghetti plot and a box-plots (note that for demonstration purposes, only three interventions are included in the example box-plots).
 
 ```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Examples of Recommended EDA Plots"}
 library(ggplot2)
