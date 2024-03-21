@@ -86,12 +86,19 @@ However, there are several limitations to the models mentioned above. Firstly, G
 ```{r, include=FALSE}
 # fit the LMM model
 library(lme4)
+library(glmmTMB)
 data$Site <- as.factor(data$Site)
 data$Intervention <- as.factor(data$Intervention)
 data$DofW <- as.factor(data$DofW)
-zerocal_lme = lmer(ZeroCal ~ (1|Site) + (1|Total) + Intervention 
-                   + DofW, data=data)
+data$proptotal <- data$Total/max(data$Total)
+zerocal_lme = glmer(ZeroCal ~ (1|Site) + (1|Total) + Intervention 
+                   + DofW, data=data, family=poisson)
+zerocal_lme_2 = glmer(ZeroCal ~ Site + (1|Total) + Intervention 
+                   + DofW, data=data, family=poisson)
+zerocal_lme_3 = glmmTMB(ZeroCal ~ (1|Site) + (1|Total) + Intervention 
+                   + DofW, data=data, family=nbinom1)
 ```
+
 
 ## Conclusions
 
