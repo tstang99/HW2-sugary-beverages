@@ -70,7 +70,7 @@ In this study, the primary focus is to analyze the effects of the interventions,
 Hence, the proposed models are \begin{align*}
 ZeroCal & \sim Intervention(Site) + DofW + Total\\
 Sugary & \sim Intervention(Site) + DofW + Total.
-\end{align*} Fixed effects include Intervention, DofW, and Total, while the random effect measures how the effect of Intervention and baseline consumption varies across sites. Note that these models are simplified versions, especially with the omission of the link function. Please refer to the appendix for the formulated models.
+\end{align*} Fixed effects include Intervention, Day of the week, and Total, while the random effect measures how the effect of Intervention and baseline consumption varies across sites. Note that these models are simplified versions, especially with the omission of the link function. Please refer to the appendix for the formulated models.
 
 However, there are several limitations to the models mentioned above. Firstly, GLLMs do not accommodate autocorrelation in time series data, which refers to the dependence between consecutive observations. Moreover, the model proposed implicitly assumes that the response variables follow Poisson distributions [@coxe2009analysis], where the expectation and variability of response variables should equate, but this assumption can be easily violated in practice.
 
