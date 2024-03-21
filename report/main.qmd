@@ -16,22 +16,31 @@ The study aims to investigate whether these interventions help encourage people 
 
 ## Data description and summaries
 
-This is an experimental design where data are collected over 30 weeks, from October 27 to May 23, with a follow-up period of 14 days, gathered from two urban hospitals and one suburban hospital. During this time period, the sales of different types of drinks are recorded.
+This is an experimental design where data are collected over 30 weeks, from October 27 to May 23, with a follow-up period of 14 days, gathered from two urban hospitals and one suburban hospital. During this time period, the sales of different types of drinks are recorded (see Table \ref{tab1}).
 
-| Data Name    | Data Type   | Data Description                       |
-|--------------|-------------|----------------------------------------|
-| Count        | Integer     | The number of days                     |
-| DofW         | Categorical | The day of the week, 7 levels          |
-| Site         | Categorical | The location of the hospital, 3 levels |
-| Intervention | Categorical | The intervention applied, 9 levels     |
-| ZeroCal      | Integer     | The number of zero calorie drink sold  |
-| Sugary       | Integer     | The number of sugary drink sold        |
-| Juice100     | Integer     | The number of Juice100 sold            |
-| Ojuice       | Integer     | The number of Ojuice sold              |
-| Sports       | Integer     | The number of sports drink sold        |
-| Total        | Continuous  | The sum of all drink sold              |
-
-There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. These columns will not be included in the model because of their irrelevancy, so the missing entries in these columns will not affect the statistical analysis. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period. This is possible due to the hospital's cafeteria and convenient shop close down for renovation. Apart from these, there are two isolated cases of missing entries. These can be reasonably attributed to temporary closures for public holidays.
+```{=tex}
+\begin{table}[htbp]
+    \centering
+    \caption{Summary of data}
+    \label{tab1}
+    \begin{tabular}{ c|c|c }
+        \hline
+        Data Name & Data Type & Data Description \\
+        \hline
+        DofW         & Categorical & The day of the week, 7 levels \\
+        Site         & Categorical & The location of the hospital, 3 levels \\
+        Intervention & Categorical & The intervention applied, 9 levels \\
+        ZeroCal      & Integer     & The number of zero calorie drinks sold \\
+        Sugary       & Integer     & The number of sugary drinks sold \\
+        Juice100     & Integer     & The number of Juice100 sold \\
+        Ojuice       & Integer     & The number of Ojuice sold \\
+        Sports       & Integer     & The number of sports drinks sold \\
+        Total        & Continuous  & The sum of all drinks sold \\
+        \hline
+    \end{tabular}
+\end{table}
+```
+There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. Given that neither these measurements themselves nor their links with the consumption of ZeroCal/Sugary beverages is not in the main interest of study, the missing values in these columns should not be specifically focused. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period. This is possible due to the hospital's cafeteria and convenient shop close down for renovation. Apart from these, there are two isolated cases of missing entries. These can be reasonably attributed to temporary closures for public holidays.
 
 ## Exploratory Data Analysis
 
@@ -65,14 +74,14 @@ This section outlines general strategies for quantifying and comparing the impac
 
 It is recommended to implement a Generalized Linear Mixed Model (GLMM) to address the problems. A GLMM, an extension of the Linear Mixed Model (LMM) [@winter2013linear], can incorporate both fixed and random effects, and also accommodate the response variable being a count variable through a link function [@dobson2018introduction]. Specifically, while the fixed effects assess the association of covariates with the response variable across the overall population---serving as a baseline---the random effects account for variations in some associations across different entities or individuals.
 
-In this study, the primary focus is to analyze the effects of the interventions, and therefore, it is suggested to treat the intervention as a fixed effect. Additionally, days of the week and total daily beverage consumption should also be considered as fixed effects because they apply to all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to include sites as a random effect in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which are the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. Last but not least, given that the consumption of ZeroCal beverage is a non-negative integer, using an exponential link function to guarantee a positive output is suggested.
+In this study, the primary focus is to analyze the effects of the interventions, and therefore, it is suggested to treat the intervention as a fixed effect. Additionally, days of the week should also be considered as fixed effects because they apply to all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to include sites and total as two random effect in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which are the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact while controlling for external factors. Last but not least, given that the consumption of ZeroCal beverage is count (non-negative integer), it is natural to assume that it follows a Poisson distribution. Subsequently, using an exponential link function to guarantee a positive output from model is suggested.
 
 Hence, the proposed models are \begin{align*}
 ZeroCal & \sim Intervention(Site) + DofW + Total\\
 Sugary & \sim Intervention(Site) + DofW + Total.
-\end{align*} Fixed effects include Intervention, Day of the week, and Total, while the random effect measures how the effect of Intervention and baseline consumption varies across sites. Note that these models are simplified versions, especially with the omission of the link function. Please refer to the appendix for the formulated models.
+\end{align*} Fixed effects include Intervention, DofW, and Total, while the random effect measures how the effect of Intervention and baseline consumption varies across sites. Note that these models are simplified versions, especially with the omission of the link function. Please refer to the appendix for the formulated models.
 
-However, there are several limitations to the models mentioned above. Firstly, GLLMs do not accommodate autocorrelation in time series data, which refers to the dependence between consecutive observations. Moreover, the model proposed implicitly assumes that the response variables follow Poisson distributions [@coxe2009analysis], where the expectation and variability of response variables should equate, but this assumption can be easily violated in practice.
+However, there are several limitations to the models mentioned above. Firstly, GLLMs do not accommodate autocorrelation in time series data, which refers to the dependence between consecutive observations. Moreover, as mentioned, the model proposed implicitly assumes that the response variables follow Poisson distributions [@coxe2009analysis], where the expectation and variability of response variables should equate, but this assumption can be easily violated in practice.
 
 ## Conclusions
 
@@ -87,6 +96,12 @@ We recommend using GLMMs to fit the relationship between covariates and response
 
 ### Mathematical Formulation of Models
 
-Here is a formulation of the Generalized Linear Mixed Model within the context of this research. As suggested earlier, random effects can be placed on both the intervention's slope and intercept. Taking $response = ZeroCal$ as an example, the model will take the format of $$
-E(zero\_calorie_{ij}) = exp((\beta_0 + b_{0i}) + (\beta_1 + b_{1i})\; Intervention + \beta_2 \; DofW + \beta_3 \; Total)
-$$ where $b_{0i} \sim N(0,\sigma_1)$ and $b_{2i} \sim N(0,\sigma_2)$. Here, $i \in \{1,2,3\}$ is used to index the three sites, and $j\in \{1,2, \dots, 221\}$ is used to index the date. Both $\sigma_1$ and $\sigma_2$ can be estimated using data, and $zero\_calorie_{ij}$ is assumed to have poisson distribution where its expectation should be equal to its variance. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome.
+Here is a formulation of the Generalized Linear Mixed Model within the context of this research. As suggested earlier, random effects can be placed on both the intervention's slope and intercept. Taking $y = ZeroCal, x_1 = Total, x_2 = Intervention, x_3 = DofW$, the model will take the format of
+
+```{=tex}
+\begin{equation}
+\label{eq1}
+E(y_{ij}) = exp((\beta_0 + b_{0i}) + (\beta_1 + b_{1i} + b_1 x_1)\; x_2 + \beta_2 \; x_3 + \beta_3 \; x_1)
+\end{equation}
+```
+where $b_{0i} \sim N(0,\sigma_1^2)$, $b_{1i} \sim N(0,\sigma_2^2)$ and $b_{1} \sim N(0,\sigma_3^2)$. Here, $i \in \{1,2,3\}$ is used to index the three sites, and $j\in \{1,2, \dots, 221\}$ is used to index the date. $\sigma_1$, $\sigma_2$ and $\sigma_3$ can be estimated using data, and $zero\_calorie_{ij}$ is assumed to have poisson distribution where its expectation should be equal to its variance. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome.
