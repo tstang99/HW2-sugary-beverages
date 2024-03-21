@@ -109,6 +109,11 @@ We recommend using GLMMs to fit the relationship between covariates and response
 
 ### Mathematical Formulation of Models
 
-Here is a formulation of the Generalized Linear Mixed Model within the context of this research. As suggested earlier, random effects can be placed on both the intervention's slope and intercept. Taking $response = ZeroCal$ as an example, the model will take the format of $$
-E(zero\_calorie_{ij}) = exp((\beta_0 + b_{0i}) + (\beta_1 + b_{1i})\; Intervention + \beta_2 \; DofW + \beta_3 \; Total)
-$$ where $b_{0i} \sim N(0,\sigma_1)$ and $b_{2i} \sim N(0,\sigma_2)$. Here, $i \in \{1,2,3\}$ is used to index the three sites, and $j\in \{1,2, \dots, 221\}$ is used to index the date. Both $\sigma_1$ and $\sigma_2$ can be estimated using data, and $zero\_calorie_{ij}$ is assumed to have poisson distribution where its expectation should be equal to its variance. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome.
+Here is a formulation of the Generalized Linear Mixed Model within the context of this research. As suggested earlier, random effects can be placed on both the intervention's slope and intercept. Taking $y = ZeroCal, x_1 = Total, x_2 = Intervention, x_3 = DofW$, the model will take the format of 
+
+\begin{equation}
+\label{eq1}
+E(y_{ij}) = exp((\beta_0 + b_{0i}) + (\beta_1 + b_{1i} + b_1 x_1)\; x_2 + \beta_2 \; x_3 + \beta_3 \; x_1)
+\end{equation}
+
+where $b_{0i} \sim N(0,\sigma_1^2)$, $b_{1i} \sim N(0,\sigma_2^2)$ and $b_{1} \sim N(0,\sigma_3^2)$. Here, $i \in \{1,2,3\}$ is used to index the three sites, and $j\in \{1,2, \dots, 221\}$ is used to index the date. $\sigma_1$, $\sigma_2$ and $\sigma_3$ can be estimated using data, and $zero\_calorie_{ij}$ is assumed to have poisson distribution where its expectation should be equal to its variance. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome.
