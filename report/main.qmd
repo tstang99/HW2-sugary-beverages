@@ -44,12 +44,12 @@ data <- filter(data, Total > 0)
 data <- data[,-c(7,8,9)]
 ```
 
-Specific to the statistical questions listed in the introduction, the following exploratory data analysis procedures are suggested. Firstly, in order to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how it varies across the three sites. Meanwhile, it is recommended to use box-plots to approach the primary statistical question concerning the impact of different interventions on zero-calorie and sugary beverage consumption. Box-plots enable a preliminary check of consumption distributions under various interventions. Illustrated below are examples of a spaghetti plot and a box-plots (note that for demonstration purposes, only three interventions are included in the example box-plots).
+Specific to the statistical questions listed in the introduction, the following exploratory data analysis procedures are suggested. Firstly, to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how they vary across the three sites. Based on Figure 1, it is clear that the time-series data for zero-calorie beverage consumption at the site "chop" are significantly higher than those at the other two sites, suggesting that the distributions of consumption may vary substantially under different interventions. Additionally, there are two observations. Firstly, the spaghetti plot reveals that except for the beginning period at the site "HF", there is no apparent trend at all three sites, as the long-term averages seem to be stable. However, strong weekly variations are presented, implying that it is reasonable to include the day of the week (DofW) and to exclude the time (count) in the model.
 
 ```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Examples of Recommended EDA Plots"}
 library(ggplot2)
 library(cowplot)
-p1=ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
+ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
   geom_point()+
   geom_line()+
   labs(x="Days of Experiment", y="ZeroCal (bottle)",
@@ -57,21 +57,7 @@ p1=ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
   theme(plot.title=element_text(hjust=0.5),
         legend.position="bottom")
 
-example_data <- data |> filter(Intervention %in% 
-                                 c("cal", "dismes", "preint"))
-
-p2=ggplot(data=example_data, aes(x=Intervention, y=ZeroCal))+
-  geom_boxplot(outlier.colour="red", outlier.shape=8,
-                outlier.size=4)+
-  labs(x="Interventions", y="ZeroCal (bottle)",
-       title="The Box-plot")+
-  theme(plot.title=element_text(hjust=0.5),
-        legend.position="bottom")
-
-plot_grid(p1,p2, ncol=2)
 ```
-
-Based on the two plots above, it's clear that the time-series data for zero-calorie beverage consumption at site "chop" significantly diverges from the patterns observed at the other two sites, and that the distributions of consumption may vary substantially under different interventions. Additionally, there are two observations. Firstly, the spaghetti plot reveals that except for the beginning period at site "HF", there is no apparent trend at all three sites as the long-term averages seem to be stable. However, strong weekly variations are presented, implying that it is reasonable to include the day of the week (DofW) and to exclude the time (count) in the model. Secondly, the box-plots indicate the presence of many outliers during which the caloric messaging was displayed. However, the clustering nature of these outliers tells valuable information. Therefore, it is advised that outliers be retained in the analysis to reflect the true variability inherent in the intervention's effects.
 
 ## Formal analysis
 
