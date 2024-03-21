@@ -39,7 +39,7 @@ This is an experimental design where data are collected over 30 weeks, from Octo
     \end{tabular}
 \end{table}
 
-There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. These columns will not be included in the model because of their irrelevancy, so the missing entries in these columns will not affect the statistical analysis. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period. This is possible due to the hospital's cafeteria and convenient shop close down for renovation. Apart from these, there are two isolated cases of missing entries. These can be reasonably attributed to temporary closures for public holidays.
+There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. Given that neither these measurements themselves nor their links with the consumption of ZeroCal/Sugary beverages is not in the main interest of study, the missing values in these columns should not be specifically focused. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period. This is possible due to the hospital's cafeteria and convenient shop close down for renovation. Apart from these, there are two isolated cases of missing entries. These can be reasonably attributed to temporary closures for public holidays.
 
 ## Exploratory Data Analysis
 
@@ -52,12 +52,13 @@ data <- filter(data, Total > 0)
 data <- data[,-c(7,8,9)]
 ```
 
-Specific to the statistical questions listed in the introduction, the following exploratory data analysis [@tukey1977exploratory] procedures are suggested. Firstly, in order to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how it varies across the three sites. Meanwhile, it is recommended to use box-plots to approach the primary statistical question concerning the impact of different interventions on zero-calorie and sugary beverage consumption. Box-plots enable a preliminary check of consumption distributions under various interventions. Illustrated below in figure \ref{fig:figs} are examples of a spaghetti plot and a box-plots (note that for demonstration purposes, only three interventions are included in the example box-plots).
+
+Specific to the statistical questions listed in the introduction, the following exploratory data analysis procedures are suggested. Firstly, to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how they vary across the three sites. Based on Figure 1, it is clear that the time-series data for zero-calorie beverage consumption at the site "chop" are significantly higher than those at the other two sites, suggesting that the distributions of consumption may vary substantially under different interventions. Additionally, there are two observations. Firstly, the spaghetti plot reveals that except for the beginning period at the site "HF", there is no apparent trend at all three sites, as the long-term averages seem to be stable. However, strong weekly variations are presented, implying that it is reasonable to include the day of the week (DofW) and to exclude the time (count) in the model.
 
 ```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Examples of Recommended EDA Plots"}
 library(ggplot2)
 library(cowplot)
-p1=ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
+ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
   geom_point()+
   geom_line()+
   labs(x="Days of Experiment", y="ZeroCal (bottle)",
@@ -65,21 +66,7 @@ p1=ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
   theme(plot.title=element_text(hjust=0.5),
         legend.position="bottom")
 
-example_data <- data |> filter(Intervention %in% 
-                                 c("cal", "dismes", "preint"))
-
-p2=ggplot(data=example_data, aes(x=Intervention, y=ZeroCal))+
-  geom_boxplot(outlier.colour="red", outlier.shape=8,
-                outlier.size=4)+
-  labs(x="Interventions", y="ZeroCal (bottle)",
-       title="The Box-plot")+
-  theme(plot.title=element_text(hjust=0.5),
-        legend.position="bottom")
-
-plot_grid(p1,p2, ncol=2)
 ```
-
-Based on the two plots above, it's clear that the time-series data for zero-calorie beverage consumption at site "chop" significantly diverges from the patterns observed at the other two sites, and that the distributions of consumption may vary substantially under different interventions. Additionally, there are two observations. Firstly, the spaghetti plot reveals that except for the beginning period at site "HF", there is no apparent trend at all three sites as the long-term averages seem to be stable. However, strong weekly variations are presented, implying that it is reasonable to include the day of the week (DofW) and to exclude the time (count) in the model. Secondly, the box-plots indicate the presence of many outliers during which the caloric messaging was displayed. However, the clustering nature of these outliers tells valuable information. Therefore, it is advised that outliers be retained in the analysis to reflect the true variability inherent in the intervention's effects.
 
 ## Formal analysis
 
@@ -87,14 +74,15 @@ This section outlines general strategies for quantifying and comparing the impac
 
 It is recommended to implement a Generalized Linear Mixed Model (GLMM) to address the problems. A GLMM, an extension of the Linear Mixed Model (LMM) [@winter2013linear], can incorporate both fixed and random effects, and also accommodate the response variable being a count variable through a link function [@dobson2018introduction]. Specifically, while the fixed effects assess the association of covariates with the response variable across the overall population---serving as a baseline---the random effects account for variations in some associations across different entities or individuals.
 
-In this study, the primary focus is to analyze the effects of the interventions, and therefore, it is suggested to treat the intervention as a fixed effect. Additionally, days of the week and total daily beverage consumption should also be considered as fixed effects because they apply to all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to include sites as a random effect in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which are the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact while controlling for external factors. Last but not least, given that the consumption of ZeroCal beverage is a non-negative integer, using an exponential link function to guarantee a positive output is suggested.
+In this study, the primary focus is to analyze the effects of the interventions, and therefore, it is suggested to treat the intervention as a fixed effect. Additionally, days of the week should also be considered as fixed effects because they apply to all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to include sites and total as two random effect in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which are the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact while controlling for external factors. Last but not least, given that the consumption of ZeroCal beverage is count (non-negative integer), it is natural to assume that it follows a Poisson distribution. Subsequently, using an exponential link function to guarantee a positive output from model is suggested.
+
 
 Hence, the proposed models are \begin{align*}
 ZeroCal & \sim Intervention(Site) + DofW + Total\\
 Sugary & \sim Intervention(Site) + DofW + Total.
 \end{align*} Fixed effects include Intervention, DofW, and Total, while the random effect measures how the effect of Intervention and baseline consumption varies across sites. Note that these models are simplified versions, especially with the omission of the link function. Please refer to the appendix for the formulated models.
 
-However, there are several limitations to the models mentioned above. Firstly, GLLMs do not accommodate autocorrelation in time series data, which refers to the dependence between consecutive observations. Moreover, the model proposed implicitly assumes that the response variables follow Poisson distributions [@coxe2009analysis], where the expectation and variability of response variables should equate, but this assumption can be easily violated in practice.
+However, there are several limitations to the models mentioned above. Firstly, GLLMs do not accommodate autocorrelation in time series data, which refers to the dependence between consecutive observations. Moreover, as mentioned, the model proposed implicitly assumes that the response variables follow Poisson distributions [@coxe2009analysis], where the expectation and variability of response variables should equate, but this assumption can be easily violated in practice.
 
 ## Conclusions
 
