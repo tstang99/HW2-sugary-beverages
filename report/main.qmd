@@ -18,6 +18,7 @@ The study aims to investigate whether these interventions help encourage people 
 
 This is an experimental design where data are collected over 30 weeks, from October 27 to May 23, with a follow-up period of 14 days, gathered from two urban hospitals and one suburban hospital. During this time period, the sales of different types of drinks are recorded (see Table \ref{tab1}).
 
+```{=tex}
 \begin{table}[htbp]
     \centering
     \caption{Summary of data}
@@ -38,7 +39,7 @@ This is an experimental design where data are collected over 30 weeks, from Octo
         \hline
     \end{tabular}
 \end{table}
-
+```
 There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. Given that neither these measurements themselves nor their links with the consumption of ZeroCal/Sugary beverages is not in the main interest of study, the missing values in these columns should not be specifically focused. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period. This is possible due to the hospital's cafeteria and convenient shop close down for renovation. Apart from these, there are two isolated cases of missing entries. These can be reasonably attributed to temporary closures for public holidays.
 
 ## Exploratory Data Analysis
@@ -51,7 +52,6 @@ data <- read_csv(here("rawdata/june1data.csv"))
 data <- filter(data, Total > 0) 
 data <- data[,-c(7,8,9)]
 ```
-
 
 Specific to the statistical questions listed in the introduction, the following exploratory data analysis procedures are suggested. Firstly, to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how they vary across the three sites. Based on Figure 1, it is clear that the time-series data for zero-calorie beverage consumption at the site "chop" are significantly higher than those at the other two sites, suggesting that the distributions of consumption may vary substantially under different interventions. Additionally, there are two observations. Firstly, the spaghetti plot reveals that except for the beginning period at the site "HF", there is no apparent trend at all three sites, as the long-term averages seem to be stable. However, strong weekly variations are presented, implying that it is reasonable to include the day of the week (DofW) and to exclude the time (count) in the model.
 
@@ -76,7 +76,6 @@ It is recommended to implement a Generalized Linear Mixed Model (GLMM) to addres
 
 In this study, the primary focus is to analyze the effects of the interventions, and therefore, it is suggested to treat the intervention as a fixed effect. Additionally, days of the week should also be considered as fixed effects because they apply to all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to include sites and total as two random effect in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which are the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact while controlling for external factors. Last but not least, given that the consumption of ZeroCal beverage is count (non-negative integer), it is natural to assume that it follows a Poisson distribution. Subsequently, using an exponential link function to guarantee a positive output from model is suggested.
 
-
 Hence, the proposed models are \begin{align*}
 ZeroCal & \sim Intervention(Site) + DofW + Total\\
 Sugary & \sim Intervention(Site) + DofW + Total.
@@ -97,28 +96,22 @@ We recommend using GLMMs to fit the relationship between covariates and response
 
 ### Mathematical Formulation of Models
 
-There are three different types of generalized linear models fitted in this report, adapted for different structures of data. The first model (Equation \ref{eq1}) is GLMM with Poisson distribution, which is suitable for count data where the counts are grouped by random effects. In this case, the random effects are Site and Total.
-
+There are two types of generalized linear mixed models fitted in this report, adapted for different structures of data. For illustration purpose, only the two models for zerocal beverage sales are shown. The first model (Equation \ref{eq1}) is GLMM with Poisson distribution, which is suitable for count data where the counts are grouped by random effects. In this case, the random effect is the site.
+```{=tex}
 \begin{equation}
 \label{eq1}
-\log(\lambda_{ij}) = \beta_0 + \beta_1 \cdot \text{Intervention}_i + u_{j} + v_{i}
+\log(\text{Zerocal}_{ijk}) = \beta_0 + \beta_1 \cdot \text{Intervention}_i + \beta_2 \cdot \text{DoW} + \log(\text{Total}_{ijk}) + u_{j}
 \end{equation}
+```
+where "Zerocal" is the count for the daily sales of zerocal beverages, "DoW" encodes day of the week, and "Total" is the daily sales of all beverages. In addition, $\beta_0$ is the intercept, $\beta_1$ is the coefficient for intervention, $\beta_2$ is the coefficient for "DoW", and $u_j$ is the random effect for the j-th Site. Notice that $log(\text{Total})$ is regarded as an offset because we want its coefficient to be fixed at 1.
 
-where $\lambda_{ij}$ is the expected count for the i-th level of Intervention and the j-th level of Site and Total, $\beta_0$ is the intercept, $\beta_1$ is the coefficient for the intervention, $u_j$ is the random effect for the j-th Site, and $v_i$ is the random effect for the i-th level of Total. The random effects are assumed to follow a Poisson distribution. This model assumed the expected number of zero calorie beverage sales to have poisson distribution, where its expectation should be equal to its variance. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome.
-
-The second model (Equation \ref{eq2}) is similar to the first but assumes only a random effect on Total. Notice that $\beta_2$ is the coefficient for Site as a fixed effect.
-
+The second model (Equation \ref{eq2}) is a GLMM with negative binomial distribution. Similar to the first model, it is also used for count data, but is more suitable when there is overdispersion (the variance is greater than the mean).
+```{=tex}
 \begin{equation}
 \label{eq2}
-\log(\lambda_{ij}) = \beta_0 + \beta_1 \cdot \text{Site}_i + \beta_2 \cdot \text{Intervention}_i + v_{j}
+\log(\text{Zerocal}_{ijk}) = \beta_0 + \beta_1 \cdot \text{Intervention}_i + \beta_2 \cdot \text{DoW} + \log(\text{Total}_{ijk}) + u_{j}
 \end{equation}
-
-The third model (Equation \ref{eq3}) is a GLMM with negative binomial distribution. Similar to the first model, it is also used for count data, but is more suitable when there is overdispersion (the variance is greater than the mean).
-
-\begin{equation}
-\label{eq3}
-\log(\lambda_{ij}) = \beta_0 + \beta_1 \cdot \text{Intervention}_i + u_{j} + v_{i}
-\end{equation}
+```
 
 
-where $b_{0i} \sim N(0,\sigma_1^2)$, $b_{1i} \sim N(0,\sigma_2^2)$ and $b_{1} \sim N(0,\sigma_3^2)$. Here, $i \in \{1,2,3\}$ is used to index the three sites, and $j\in \{1,2, \dots, 221\}$ is used to index the date. $\sigma_1$, $\sigma_2$ and $\sigma_3$ can be estimated using data, and $zero\_calorie_{ij}$ is assumed to have poisson distribution where its expectation should be equal to its variance. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome.
+### Model Selection and Diagnostics
