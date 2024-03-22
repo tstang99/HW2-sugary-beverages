@@ -12,12 +12,13 @@ author: Ivy Liu, Zefan Liu, Tom Tang
 
 Zero calorie beverages are healthier compared to sugared beverages because they contain less sugar and significantly fewer calories. Over the past decades, hospitals have been striving to promote zero-calorie beverages for a healthier lifestyle. This study employs five interventions to help increase such promotion. These interventions include a 10% price discount, a price discount combined with messaging that explains the reason for the discount, messaging displaying the caloric content in sugared beverages, messaging indicating the amount of exercise needed to burn off the calories in a sugared beverage, and messaging containing both caloric content and the amount of physical activity needed.
 
-The study aims to investigate whether these interventions help encourage people to choose zero calorie beverages over sugared beverages and if such effects are consistent across hospitals. The primary statistical question in this context is: "Is there any association between interventions and the increase in zero calorie beverage consumption or decrease in sugary beverage consumption?" The secondary statistical question is:"Does the effect of intervention differs by site?"
+The study aims to investigate whether these interventions help encourage people to choose zero calorie beverages over sugared beverages and if such effects varies across hospitals.
 
 ## Data description and summaries
 
 This is an experimental design where data are collected over 30 weeks, from October 27 to May 23, with a follow-up period of 14 days, gathered from two urban hospitals and one suburban hospital. During this time period, the sales of different types of drinks are recorded (see Table \ref{tab1}).
 
+```{=tex}
 \begin{table}[htbp]
     \centering
     \caption{Summary of data}
@@ -38,8 +39,8 @@ This is an experimental design where data are collected over 30 weeks, from Octo
         \hline
     \end{tabular}
 \end{table}
-
-There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. Given that neither these measurements themselves nor their links with the consumption of ZeroCal/Sugary beverages is not in the main interest of study, the missing values in these columns should not be specifically focused. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period. This is possible due to the hospital's cafeteria and convenient shop close down for renovation. Apart from these, there are two isolated cases of missing entries. These can be reasonably attributed to temporary closures for public holidays.
+```
+There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. Since neither these measurements themselves nor their links with the consumption of ZeroCal/Sugary beverages are the main focus of the study, the missing values in these columns should not be given specific attention. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period and two isolated cases of missing entries. Such occurrences could be due to public holidays or temporary closures for renovation. In general, such missing data can be classified as missing at random.
 
 ## Exploratory Data Analysis
 
@@ -52,8 +53,7 @@ data <- filter(data, Total > 0)
 data <- data[,-c(7,8,9)]
 ```
 
-
-Specific to the statistical questions listed in the introduction, the following exploratory data analysis procedures are suggested. Firstly, to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how they vary across the three sites. Based on Figure 1, it is clear that the time-series data for zero-calorie beverage consumption at the site "chop" are significantly higher than those at the other two sites, suggesting that the distributions of consumption may vary substantially under different interventions. Additionally, there are two observations. Firstly, the spaghetti plot reveals that except for the beginning period at the site "HF", there is no apparent trend at all three sites, as the long-term averages seem to be stable. However, strong weekly variations are presented, implying that it is reasonable to include the day of the week (DofW) and to exclude the time (count) in the model.
+Firstly, to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how they vary across the three sites. Based on Figure 1, it is evident that the time-series data for zero-calorie beverage consumption at the site "chop" are significantly higher than those at the other two sites, suggesting substantial variation in consumption distributions under different interventions. Additionally, the spaghetti plot reveals that except for the initial period at the site "HF," there is no apparent trend at all three sites, as the long-term averages seem to be stable. However, strong weekly variations are evident, implying that it is reasonable to include the day of the week (DofW) and exclude the time (count) in the model.
 
 ```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Examples of Recommended EDA Plots"}
 library(ggplot2)
@@ -70,12 +70,9 @@ ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
 
 ## Formal analysis
 
-This section outlines general strategies for quantifying and comparing the impacts of five different interventions on the consumption of zero-calorie and sugary beverages across three sites.
-
 It is recommended to implement a Generalized Linear Mixed Model (GLMM) to address the problems. A GLMM, an extension of the Linear Mixed Model (LMM) [@winter2013linear], can incorporate both fixed and random effects, and also accommodate the response variable being a count variable through a link function [@dobson2018introduction]. Specifically, while the fixed effects assess the association of covariates with the response variable across the overall population---serving as a baseline---the random effects account for variations in some associations across different entities or individuals.
 
 In this study, the primary focus is to analyze the effects of the interventions, and therefore, it is suggested to treat the intervention as a fixed effect. Additionally, days of the week should also be considered as fixed effects because they apply to all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to include sites and total as two random effect in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which are the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact while controlling for external factors. Last but not least, given that the consumption of ZeroCal beverage is count (non-negative integer), it is natural to assume that it follows a Poisson distribution. Subsequently, using an exponential link function to guarantee a positive output from model is suggested.
-
 
 Hence, the proposed models are \begin{align*}
 ZeroCal & \sim Intervention(Site) + DofW + Total\\
@@ -97,11 +94,12 @@ We recommend using GLMMs to fit the relationship between covariates and response
 
 ### Mathematical Formulation of Models
 
-Here is a formulation of the Generalized Linear Mixed Model within the context of this research. As suggested earlier, random effects can be placed on both the intervention's slope and intercept. Taking $y = ZeroCal, x_1 = Total, x_2 = Intervention, x_3 = DofW$, the model will take the format of 
+Here is a formulation of the Generalized Linear Mixed Model within the context of this research. As suggested earlier, random effects can be placed on both the intervention's slope and intercept. Taking $y = ZeroCal, x_1 = Total, x_2 = Intervention, x_3 = DofW$, the model will take the format of
 
+```{=tex}
 \begin{equation}
 \label{eq1}
 E(y_{ij}) = exp((\beta_0 + b_{0i}) + (\beta_1 + b_{1i} + b_1 x_1)\; x_2 + \beta_2 \; x_3 + \beta_3 \; x_1)
 \end{equation}
-
+```
 where $b_{0i} \sim N(0,\sigma_1^2)$, $b_{1i} \sim N(0,\sigma_2^2)$ and $b_{1} \sim N(0,\sigma_3^2)$. Here, $i \in \{1,2,3\}$ is used to index the three sites, and $j\in \{1,2, \dots, 221\}$ is used to index the date. $\sigma_1$, $\sigma_2$ and $\sigma_3$ can be estimated using data, and $zero\_calorie_{ij}$ is assumed to have poisson distribution where its expectation should be equal to its variance. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome.
