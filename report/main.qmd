@@ -114,4 +114,21 @@ The second model (Equation \ref{eq2}) is a GLMM with negative binomial distribut
 ```
 
 
-### Model Selection and Diagnostics
+### Model Selection
+It is suggested in the formal analysis section that model should be selected based on AIC criterion. Table \ref{tab2} shows the AIC comparison.
+```{=tex}
+\begin{table}[htbp]
+    \centering
+    \caption{Model selection based on AIC criterion}
+    \label{tab2}
+    \begin{tabular}{ c|c|c }
+        \hline
+        GLMM Model & Zerocal beverage sales & Sugary beverage sales \\
+        \hline
+        Poisson            & 14874.39 & 12096.9 \\
+        Negative Binomial  & 6765.097 & 6529.67 \\
+        \hline
+    \end{tabular}
+\end{table}
+```
+THe GLMMs using negative binomial distribution are suggested because they give lower AIC scores.
