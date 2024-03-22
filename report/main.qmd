@@ -90,6 +90,8 @@ library(lme4)
 library(glmmTMB)
 data$Site <- as.factor(data$Site)
 data$Intervention <- as.factor(data$Intervention)
+data$Intervention <- relevel(data$Intervention, 
+                             ref = "preint")
 data$DofW <- as.factor(data$DofW)
 
 zerocal_lme = glmer(ZeroCal ~ (1|Site) + Intervention 
@@ -107,11 +109,11 @@ AIC(sugary_lme)
 AIC(sugary_lme_nb)
 ```
 
-
+Based on our analysis, Generalized Mixed Effect Models assuming response variables follow negative binomial distribution have the best performance in terms of Akaike information criterion (AIC), which is one of the most common criterions for model selection. For the consumption of Zero-Cal beverage, our model suggests that only the effect of the intervention "discount+messaging" are statistically significant; for the consumption of Sugary beverage, our model also suggests that the effect of the intervention "discount+messaging" is significant. Besides, the effects from "DofW=6" and "DofW=7" are also significant, implying that on average the consumption of sugary beverage may differ between weekdays and weekend.
 
 ## Conclusions and Limitation
 
-We recommend using GLMMs to fit the relationship between covariates and response variables. Based on different research interests, response variable should be either ZeroCal beverage consumption or sugary beverage consumption. The fixed-effect explanatory variables suggested are intervention, Total and DofW, and the random-effect explanatory variable is Site.
+
 
 ## References
 
