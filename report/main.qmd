@@ -97,11 +97,28 @@ We recommend using GLMMs to fit the relationship between covariates and response
 
 ### Mathematical Formulation of Models
 
-Here is a formulation of the Generalized Linear Mixed Model within the context of this research. As suggested earlier, random effects can be placed on both the intervention's slope and intercept. Taking $y = ZeroCal, x_1 = Total, x_2 = Intervention, x_3 = DofW$, the model will take the format of 
+There are three different types of generalized linear models fitted in this report, adapted for different structures of data. The first model (Equation \ref{eq1}) is GLMM with Poisson distribution, which is suitable for count data where the counts are grouped by random effects. In this case, the random effects are Site and Total.
 
 \begin{equation}
 \label{eq1}
-E(y_{ij}) = exp((\beta_0 + b_{0i}) + (\beta_1 + b_{1i} + b_1 x_1)\; x_2 + \beta_2 \; x_3 + \beta_3 \; x_1)
+\log(\lambda_{ij}) = \beta_0 + \beta_1 \cdot \text{Intervention}_i + u_{j} + v_{i}
 \end{equation}
 
-where $b_{0i} \sim N(0,\sigma_1^2)$, $b_{1i} \sim N(0,\sigma_2^2)$ and $b_{1} \sim N(0,\sigma_3^2)$. Here, $i \in \{1,2,3\}$ is used to index the three sites, and $j\in \{1,2, \dots, 221\}$ is used to index the date. $\sigma_1$, $\sigma_2$ and $\sigma_3$ can be estimated using data, and $zero\_calorie_{ij}$ is assumed to have poisson distribution where its expectation should be equal to its variance. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome.
+where $\lambda_{ij}$ is the expected count for the i-th level of Intervention and the j-th level of Site and Total, $\beta_0$ is the intercept, $\beta_1$ is the coefficient for the intervention, $u_j$ is the random effect for the j-th Site, and $v_i$ is the random effect for the i-th level of Total. The random effects are assumed to follow a Poisson distribution. This model assumed the expected number of zero calorie beverage sales to have poisson distribution, where its expectation should be equal to its variance. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome.
+
+The second model (Equation \ref{eq2}) is similar to the first but assumes only a random effect on Total. Notice that $\beta_2$ is the coefficient for Site as a fixed effect.
+
+\begin{equation}
+\label{eq2}
+\log(\lambda_{ij}) = \beta_0 + \beta_1 \cdot \text{Site}_i + \beta_2 \cdot \text{Intervention}_i + v_{j}
+\end{equation}
+
+The third model (Equation \ref{eq3}) is a GLMM with negative binomial distribution. Similar to the first model, it is also used for count data, but is more suitable when there is overdispersion (the variance is greater than the mean).
+
+\begin{equation}
+\label{eq3}
+\log(\lambda_{ij}) = \beta_0 + \beta_1 \cdot \text{Intervention}_i + u_{j} + v_{i}
+\end{equation}
+
+
+where $b_{0i} \sim N(0,\sigma_1^2)$, $b_{1i} \sim N(0,\sigma_2^2)$ and $b_{1} \sim N(0,\sigma_3^2)$. Here, $i \in \{1,2,3\}$ is used to index the three sites, and $j\in \{1,2, \dots, 221\}$ is used to index the date. $\sigma_1$, $\sigma_2$ and $\sigma_3$ can be estimated using data, and $zero\_calorie_{ij}$ is assumed to have poisson distribution where its expectation should be equal to its variance. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome.
