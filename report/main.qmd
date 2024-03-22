@@ -27,6 +27,7 @@ This is an experimental design where data are collected over 30 weeks, from Octo
         \hline
         Data Name & Data Type & Data Description \\
         \hline
+        Count        & Categorical & The day from the beginning of study
         DofW         & Categorical & The day of the week, 7 levels \\
         Site         & Categorical & The location of the hospital, 3 levels \\
         Intervention & Categorical & The intervention applied, 9 levels \\
@@ -70,18 +71,45 @@ ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
 
 ## Formal analysis
 
-It is recommended to implement a Generalized Linear Mixed Model (GLMM) to address the problems. A GLMM, an extension of the Linear Mixed Model (LMM) [@winter2013linear], can incorporate both fixed and random effects, and also accommodate the response variable being a count variable through a link function [@dobson2018introduction]. Specifically, while the fixed effects assess the association of covariates with the response variable across the overall population---serving as a baseline---the random effects account for variations in some associations across different entities or individuals.
+It is recommended to implement a Generalized Linear Mixed Model (GLMM) to address the problems. A GLMM, an extension of the Linear Mixed Model (LMM) [@winter2013linear], can incorporate both fixed and random effects, and also accommodate the response variable being a count variable through a link function [@dobson2018introduction]. Specifically, while the fixed effects assess the association of covariates with the response variable across the overall population---serving as a baseline---the random effects account for variations in some associations across different entities or individuals. Link function can guarantee that the range of model outputs matches with the range of values that can be observed, which is the advantage of GLMM over LMM.
 
-In this study, the primary focus is to analyze the effects of the interventions, and therefore, it is suggested to treat the intervention as a fixed effect. Additionally, days of the week should also be considered as fixed effects because they apply to all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to include sites and total as two random effect in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which are the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact while controlling for external factors. Last but not least, given that the consumption of ZeroCal beverage is count (non-negative integer), it is natural to assume that it follows a Poisson distribution. Subsequently, using an exponential link function to guarantee a positive output from model is suggested.
+In this study, the primary focus is to analyze the effects of the interventions, and therefore, it is suggested to treat Intervention as a fixed effect. Additionally, DofW should also be considered as fixed effects because they apply to all three Sites. Random effect should be Site, which characterizes the objects being observed over time. Note that although Total is also a reasonable predictor for both variables of interest, it is more appropriate to place it as a offset term in model, whose effect to model is "structural" with a fixed coefficient of one. Given that the consumption is non-negative integer in data, a natural choice of link function is to apply logarithm transformation on ZeroCal, Sugary and Total, which guarantees that model outputs are positive.
 
-Hence, the proposed models are \begin{align*}
-ZeroCal & \sim Intervention(Site) + DofW + Total\\
-Sugary & \sim Intervention(Site) + DofW + Total.
-\end{align*} Fixed effects include Intervention, DofW, and Total, while the random effect measures how the effect of Intervention and baseline consumption varies across sites. Note that these models are simplified versions, especially with the omission of the link function. Please refer to the appendix for the formulated models.
+Hence, the proposed models are
 
-However, there are several limitations to the models mentioned above. Firstly, GLLMs do not accommodate autocorrelation in time series data, which refers to the dependence between consecutive observations. Moreover, as mentioned, the model proposed implicitly assumes that the response variables follow Poisson distributions [@coxe2009analysis], where the expectation and variability of response variables should equate, but this assumption can be easily violated in practice.
+```{=tex}
+\begin{align*}
+\log(\text{ZeroCal}_{ij}) &= (\beta_0+b_i) + \beta_1\text{Intervention} + \beta_2\text{DofW} + \text{offset}(\log(Total))\\
+\log(\text{Sugary}_{ij}) &= (\beta_0+b_i) + \beta_1\text{Intervention} + \beta_2\text{DofW} + \text{offset}(\log(Total))
+\end{align*}
+```
+where $b_i \sim N(0,\sigma^2)$ represents the random effect from Site. Note that response variables, which are counts, can be assumed to follow either Poisson or Negative Binomial distribution under log link function. The former is more common but also more restrictive.
 
-## Conclusions
+```{r, include=FALSE}
+library(lme4)
+library(glmmTMB)
+data$Site <- as.factor(data$Site)
+data$Intervention <- as.factor(data$Intervention)
+data$DofW <- as.factor(data$DofW)
+
+zerocal_lme = glmer(ZeroCal ~ (1|Site) + Intervention 
+                    + DofW + offset(log(Total)), data=data, family=poisson)
+zerocal_lme_nb = glmmTMB(ZeroCal ~ (1|Site) + offset(log(Total)) + Intervention 
+                        + DofW, data=data, family=nbinom1)
+AIC(zerocal_lme)
+AIC(zerocal_lme_nb)
+
+sugary_lme = glmer(Sugary ~ (1|Site) + offset(log(Total)) + Intervention 
+                    + DofW, data=data, family=poisson)
+sugary_lme_nb = glmmTMB(Sugary ~ (1|Site) + offset(log(Total)) + Intervention 
+                        + DofW, data=data, family=nbinom1)
+AIC(sugary_lme)
+AIC(sugary_lme_nb)
+```
+
+
+
+## Conclusions and Limitation
 
 We recommend using GLMMs to fit the relationship between covariates and response variables. Based on different research interests, response variable should be either ZeroCal beverage consumption or sugary beverage consumption. The fixed-effect explanatory variables suggested are intervention, Total and DofW, and the random-effect explanatory variable is Site.
 
