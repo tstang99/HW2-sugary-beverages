@@ -147,6 +147,7 @@ data <- read_csv(here("rawdata/june1data.csv"))
 data$Site <- as.factor(data$Site)
 data$Intervention <- as.factor(data$Intervention)
 data$DofW <- as.factor(data$DofW)
+data$Intervention <- relevel(data$Intervention,ref="preint")
 ```
 
 ```{r, echo=FALSE}
@@ -155,7 +156,7 @@ output <- simulateResiduals(fittedModel = zerocal_lme_nb, plot = F)
 plotQQunif(output) 
 plotResiduals(output)
 ```
-These two plots correspond to the zero calories model.    
+These two plots above correspond to the zero calories model. The qq-plot suggests a good model fit as it forms a relatively straight line. Regarding the residual plot, there are quantile deviations indicating that some data points fall outside the range of simulated values. However, since our focus is on inference rather than prediction and we lack information on the extent of deviation from the model expectation, this issue is not considered major.
 
 ```{r, echo=FALSE}
 sugary_lme_nb = glmmTMB(Sugary ~ (1|Site) + offset(log(Total)) + Intervention 
@@ -164,3 +165,6 @@ output1 <- simulateResiduals(fittedModel = sugary_lme_nb, plot = F)
 plotQQunif(output1) 
 plotResiduals(output1)
 ```
+
+For the sugary beverage model, we see a similar result to the zero calories model check.
+
