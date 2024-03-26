@@ -27,7 +27,7 @@ This is an experimental design where data are collected over 30 weeks, from Octo
         \hline
         Data Name & Data Type & Data Description \\
         \hline
-        Count        & Categorical & The day from the beginning of study
+        Count        & Categorical & The day from the beginning of study\\
         DofW         & Categorical & The day of the week, 7 levels \\
         Site         & Categorical & The location of the hospital, 3 levels \\
         Intervention & Categorical & The intervention applied, 9 levels \\
@@ -49,6 +49,7 @@ There are missing entries in this dataset, with a significant portion of the mis
 library(here)
 library(readr)
 library(dplyr)
+library(ggplot2)
 data <- read_csv(here("rawdata/june1data.csv"))
 data <- filter(data, Total > 0) 
 data <- data[,-c(7,8,9)]
@@ -56,12 +57,12 @@ data <- data[,-c(7,8,9)]
 
 Firstly, to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how they vary across the three sites. Based on Figure 1, it is evident that the time-series data for zero-calorie beverage consumption at the site "chop" are significantly higher than those at the other two sites, suggesting substantial variation in consumption distributions under different interventions. Additionally, the spaghetti plot reveals that except for the initial period at the site "HF," there is no apparent trend at all three sites, as the long-term averages seem to be stable. However, strong weekly variations are evident, implying that it is reasonable to include the day of the week (DofW) and exclude the time (count) in the model.
 
-```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Examples of Recommended EDA Plots"}
+```{r figs, warnings = FALSE, echo=FALSE, fig.width=7,fig.height=6,fig.cap="\\label{fig:figs}Examples of Recommended EDA Plots"}
 ggplot(data = data, aes(x = Count, y = ZeroCal, group = Site, color = Site)) +
-  geom_line(size = 1, alpha = 0.8) + # Adjust line size and transparency
+  geom_line(linewidth = 0.6, alpha = 0.8) + # Adjust line size and transparency
   scale_color_brewer(palette = "Dark2") + # Use a color palette for better distinction
   labs(x = "Days of Experiment", 
-       y = "ZeroCal (bottle)", 
+       y = "Sales of zero calorie beverages (bottles)", 
        title = "The Spaghetti Plot by Site") +
   theme_minimal(base_size = 14) + # Use a minimal theme with adjusted base font size
   theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
