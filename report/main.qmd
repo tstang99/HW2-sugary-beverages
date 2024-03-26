@@ -73,14 +73,16 @@ ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
 
 It is recommended to implement a Generalized Linear Mixed Model (GLMM) to address the problems. A GLMM, an extension of the Linear Mixed Model (LMM) [@winter2013linear], can incorporate both fixed and random effects, and also accommodate the response variable being a count variable through a link function [@dobson2018introduction]. Specifically, while the fixed effects assess the association of covariates with the response variable across the overall population---serving as a baseline---the random effects account for variations in some associations across different entities or individuals. Link function can guarantee that the range of model outputs matches with the range of values that can be observed, which is the advantage of GLMM over LMM.
 
-In this study, the primary focus is to analyze the effects of the interventions, and therefore, it is suggested to treat Intervention as a fixed effect. Additionally, DofW should also be considered as fixed effects because they apply to all three Sites. Random effect should be Site, which characterizes the objects being observed over time. Note that although Total is also a reasonable predictor for both variables of interest, it is more appropriate to place it as a offset term in model, whose effect to model is "structural" with a fixed coefficient of one. Given that the consumption is non-negative integer in data, a natural choice of link function is to apply logarithm transformation on ZeroCal, Sugary and Total, which guarantees that model outputs are positive.
+In this study, our primary aim is to examine the impacts of various interventions. Hence, it is advisable to consider the intervention variable as a fixed effect. Furthermore, the Day of Week (DofW) should be treated as fixed effects too, since they are consistent across all three sites. The random effect in this analysis should be the Site, which accounts for variability in the observations over time. Although the total consumption volume is a plausible predictor for both variables of interest—zero-calorie and sugary beverage consumption—it is more fitting to incorporate it as an offset term in the model. This approach ensures that its influence on the model is "structural," with a fixed coefficient of one, reflecting its proportional effect on the response variables.
+
+Given that the consumption data consist of non-negative integers, a logical choice for the link function is the logarithm transformation applied to the ZeroCal, Sugary, and Total variables. This transformation ensures that the model's outputs remain positive, aligning with the nature of the consumption data.
 
 Hence, the proposed models are
 
 ```{=tex}
 \begin{align*}
-\log(\text{ZeroCal}_{ij}) &= (\beta_0+b_i) + \beta_1\text{Intervention} + \beta_2\text{DofW} + \text{offset}(\log(Total))\\
-\log(\text{Sugary}_{ij}) &= (\beta_0+b_i) + \beta_1\text{Intervention} + \beta_2\text{DofW} + \text{offset}(\log(Total))
+\log(\text{ZeroCal}_{ij}) &= (\beta_0+b_i) + \beta_1\text{Intervention} + \beta_2\text{DofW} + \text{offset}(\log(\text{Total}))\\
+\log(\text{Sugary}_{ij}) &= (\beta_0+b_i) + \beta_1\text{Intervention} + \beta_2\text{DofW} + \text{offset}(\log(\text{Total}))
 \end{align*}
 ```
 where $b_i \sim N(0,\sigma^2)$ represents the random effect from Site. Note that response variables, which are counts, can be assumed to follow either Poisson or Negative Binomial distribution under log link function. The former is more common but also more restrictive.
@@ -109,11 +111,11 @@ AIC(sugary_lme)
 AIC(sugary_lme_nb)
 ```
 
-Based on our analysis, Generalized Mixed Effect Models assuming response variables follow negative binomial distribution have the best performance in terms of Akaike information criterion (AIC), which is one of the most common criterions for model selection. For the consumption of Zero-Cal beverage, our model suggests that only the effect of the intervention "discount+messaging" are statistically significant; for the consumption of Sugary beverage, our model also suggests that the effect of the intervention "discount+messaging" is significant. Besides, the effects from "DofW=6" and "DofW=7" are also significant, implying that on average the consumption of sugary beverage may differ between weekdays and weekend.
+Based on our analysis, the Generalized Mixed Effect Models with the assumption that the response variables follow a negative binomial distribution outperform other models in terms of the Akaike Information Criterion (AIC), a widely used criterion for model selection. For zero-calorie beverage consumption, the model indicates that only the "discount+messaging" intervention has a statistically significant effect. Similarly, for sugary beverage consumption, the effect of the "discount+messaging" intervention is also significant. Additionally, the effects associated with "DofW=6" (Saturday) and "DofW=7" (Sunday) are significant, suggesting that, on average, sugary beverage consumption may vary between weekdays and weekends.
 
-## Conclusions and Limitation
+## Conclusions
 
-
+Overall, to assess the impact of various interventions on the consumption of zero-calorie and sugary beverages, while accounting for site effects, we propose utilizing a generalized mixed-effects model with a negative binomial distribution assumption for both variables of interest. According to the model outputs, the "discount+messaging" intervention consistently shows statistical significance. Additionally, the effects associated with "DofW=6" (Day of Week = Saturday) and "DofW=7" (Day of Week = Sunday) are significant only in the models concerning sugary beverage consumption. Therefore, to enhance zero-calorie beverage intake, we recommend implementing a strategy that combines discounts with explicit messaging to customers. By including the total beverage consumption as an offset in our analysis, we observe that the day of the week typically does not exert a significant influence on the response variables. For more detailed insights, please refer to the statistical appendix.
 
 ## References
 
