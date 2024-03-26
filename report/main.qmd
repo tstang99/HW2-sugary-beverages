@@ -12,12 +12,13 @@ author: Ivy Liu, Zefan Liu, Tom Tang
 
 Zero calorie beverages are healthier compared to sugared beverages because they contain less sugar and significantly fewer calories. Over the past decades, hospitals have been striving to promote zero-calorie beverages for a healthier lifestyle. This study employs five interventions to help increase such promotion. These interventions include a 10% price discount, a price discount combined with messaging that explains the reason for the discount, messaging displaying the caloric content in sugared beverages, messaging indicating the amount of exercise needed to burn off the calories in a sugared beverage, and messaging containing both caloric content and the amount of physical activity needed.
 
-The study aims to investigate whether these interventions help encourage people to choose zero calorie beverages over sugared beverages and if such effects are consistent across hospitals. The primary statistical question in this context is: "Is there any association between interventions and the increase in zero calorie beverage consumption or decrease in sugary beverage consumption?" The secondary statistical question is:"Does the effect of intervention differs by site?"
+The study aims to investigate whether these interventions help encourage people to choose zero calorie beverages over sugared beverages and if such effects varies across hospitals.
 
 ## Data description and summaries
 
 This is an experimental design where data are collected over 30 weeks, from October 27 to May 23, with a follow-up period of 14 days, gathered from two urban hospitals and one suburban hospital. During this time period, the sales of different types of drinks are recorded (see Table \ref{tab1}).
 
+```{=tex}
 \begin{table}[htbp]
     \centering
     \caption{Summary of data}
@@ -26,6 +27,7 @@ This is an experimental design where data are collected over 30 weeks, from Octo
         \hline
         Data Name & Data Type & Data Description \\
         \hline
+        Count        & Categorical & The day from the beginning of study\\
         DofW         & Categorical & The day of the week, 7 levels \\
         Site         & Categorical & The location of the hospital, 3 levels \\
         Intervention & Categorical & The intervention applied, 9 levels \\
@@ -38,8 +40,8 @@ This is an experimental design where data are collected over 30 weeks, from Octo
         \hline
     \end{tabular}
 \end{table}
-
-There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. Given that neither these measurements themselves nor their links with the consumption of ZeroCal/Sugary beverages is not in the main interest of study, the missing values in these columns should not be specifically focused. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period. This is possible due to the hospital's cafeteria and convenient shop close down for renovation. Apart from these, there are two isolated cases of missing entries. These can be reasonably attributed to temporary closures for public holidays.
+```
+There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. Since neither these measurements themselves nor their links with the consumption of ZeroCal/Sugary beverages are the main focus of the study, the missing values in these columns should not be given specific attention. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period and two isolated cases of missing entries. Such occurrences could be due to public holidays or temporary closures for renovation. In general, such missing data can be classified as missing at random.
 
 ## Exploratory Data Analysis
 
@@ -47,46 +49,79 @@ There are missing entries in this dataset, with a significant portion of the mis
 library(here)
 library(readr)
 library(dplyr)
+library(ggplot2)
 data <- read_csv(here("rawdata/june1data.csv"))
 data <- filter(data, Total > 0) 
 data <- data[,-c(7,8,9)]
 ```
 
+Firstly, to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how they vary across the three sites. Based on Figure 1, it is evident that the time-series data for zero-calorie beverage consumption at the site "chop" are significantly higher than those at the other two sites, suggesting substantial variation in consumption distributions under different interventions. Additionally, the spaghetti plot reveals that except for the initial period at the site "HF," there is no apparent trend at all three sites, as the long-term averages seem to be stable. However, strong weekly variations are evident, implying that it is reasonable to include the day of the week (DofW) and exclude the time (count) in the model.
 
-Specific to the statistical questions listed in the introduction, the following exploratory data analysis procedures are suggested. Firstly, to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how they vary across the three sites. Based on Figure 1, it is clear that the time-series data for zero-calorie beverage consumption at the site "chop" are significantly higher than those at the other two sites, suggesting that the distributions of consumption may vary substantially under different interventions. Additionally, there are two observations. Firstly, the spaghetti plot reveals that except for the beginning period at the site "HF", there is no apparent trend at all three sites, as the long-term averages seem to be stable. However, strong weekly variations are presented, implying that it is reasonable to include the day of the week (DofW) and to exclude the time (count) in the model.
-
-```{r figs, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Examples of Recommended EDA Plots"}
-library(ggplot2)
-library(cowplot)
-ggplot(data=data, aes(x=Count, y=ZeroCal, color=Site))+
-  geom_point()+
-  geom_line()+
-  labs(x="Days of Experiment", y="ZeroCal (bottle)",
-       title="The Spaghetti Plot")+
-  theme(plot.title=element_text(hjust=0.5),
-        legend.position="bottom")
-
+```{r figs, warnings = FALSE, echo=FALSE, fig.width=7,fig.height=6,fig.cap="\\label{fig:figs}Examples of Recommended EDA Plots"}
+ggplot(data = data, aes(x = Count, y = ZeroCal, group = Site, color = Site)) +
+  geom_line(linewidth = 0.6, alpha = 0.8) + # Adjust line size and transparency
+  scale_color_brewer(palette = "Dark2") + # Use a color palette for better distinction
+  labs(x = "Days of Experiment", 
+       y = "Sales of zero calorie beverages (bottles)", 
+       title = "The Spaghetti Plot by Site") +
+  theme_minimal(base_size = 14) + # Use a minimal theme with adjusted base font size
+  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+        legend.position = "bottom",
+        legend.title = element_blank(), # Remove legend title
+        panel.grid.minor = element_blank(), # Remove minor grid lines
+        strip.text = element_text(face = "bold", size = 14), # Style facet labels
+        axis.title.x = element_text(margin = margin(t = 10)), # Adjust margin for x-axis title
+        axis.title.y = element_text(margin = margin(r = 10))) + # Adjust margin for y-axis title
+  facet_wrap(~ Site, nrow = 3)
 ```
 
 ## Formal analysis
 
-This section outlines general strategies for quantifying and comparing the impacts of five different interventions on the consumption of zero-calorie and sugary beverages across three sites.
+It is recommended to implement a Generalized Linear Mixed Model (GLMM) to address the problems. A GLMM, an extension of the Linear Mixed Model (LMM) [@winter2013linear], can incorporate both fixed and random effects, and also accommodate the response variable being a count variable through a link function [@dobson2018introduction]. Specifically, while the fixed effects assess the association of covariates with the response variable across the overall population---serving as a baseline---the random effects account for variations in some associations across different entities or individuals. Link function can guarantee that the range of model outputs matches with the range of values that can be observed, which is the advantage of GLMM over LMM.
 
-It is recommended to implement a Generalized Linear Mixed Model (GLMM) to address the problems. A GLMM, an extension of the Linear Mixed Model (LMM) [@winter2013linear], can incorporate both fixed and random effects, and also accommodate the response variable being a count variable through a link function [@dobson2018introduction]. Specifically, while the fixed effects assess the association of covariates with the response variable across the overall population---serving as a baseline---the random effects account for variations in some associations across different entities or individuals.
+In this study, our primary aim is to examine the impacts of various interventions. Hence, it is advisable to consider the intervention variable as a fixed effect. Furthermore, the Day of Week (DofW) should be treated as fixed effects too, since they are consistent across all three sites. The random effect in this analysis should be the Site, which accounts for variability in the observations over time. Although the total consumption volume is a plausible predictor for both variables of interest—zero-calorie and sugary beverage consumption—it is more fitting to incorporate it as an offset term in the model. This approach ensures that its influence on the model is "structural," with a fixed coefficient of one, reflecting its proportional effect on the response variables.
 
-In this study, the primary focus is to analyze the effects of the interventions, and therefore, it is suggested to treat the intervention as a fixed effect. Additionally, days of the week should also be considered as fixed effects because they apply to all three sites. To allow for a more comprehensive understanding of the intervention effects, it is advised to include sites and total as two random effect in the model. These covariates control for variability that might influence the patterns of zero-calorie/sugary beverage consumption. For instance, site differences (which are the secondary statistical question) may impact purchasing behavior due to demographic variations between urban and suburban areas. Similarly, accounting for total daily beverage consumption helps isolate the effect of human traffic on zero-calorie/sugary beverage choices. This comprehensive approach ensures that the analysis accurately reflects the interventions' impact while controlling for external factors. Last but not least, given that the consumption of ZeroCal beverage is count (non-negative integer), it is natural to assume that it follows a Poisson distribution. Subsequently, using an exponential link function to guarantee a positive output from model is suggested.
+Given that the consumption data consist of non-negative integers, a logical choice for the link function is the logarithm transformation applied to the ZeroCal, Sugary, and Total variables. This transformation ensures that the model's outputs remain positive, aligning with the nature of the consumption data.
 
+Hence, the proposed models are
 
-Hence, the proposed models are \begin{align*}
-ZeroCal & \sim Intervention(Site) + DofW + Total\\
-Sugary & \sim Intervention(Site) + DofW + Total.
-\end{align*} Fixed effects include Intervention, DofW, and Total, while the random effect measures how the effect of Intervention and baseline consumption varies across sites. Note that these models are simplified versions, especially with the omission of the link function. Please refer to the appendix for the formulated models.
+```{=tex}
+\begin{align*}
+\log(\text{ZeroCal}_{ij}) &= (\beta_0+b_i) + \beta_1\text{Intervention} + \beta_2\text{DofW} + \text{offset}(\log(\text{Total}))\\
+\log(\text{Sugary}_{ij}) &= (\beta_0+b_i) + \beta_1\text{Intervention} + \beta_2\text{DofW} + \text{offset}(\log(\text{Total}))
+\end{align*}
+```
+where $b_i \sim N(0,\sigma^2)$ represents the random effect from Site. Note that response variables, which are counts, can be assumed to follow either Poisson or Negative Binomial distribution under log link function. The former is more common but also more restrictive.
 
-However, there are several limitations to the models mentioned above. Firstly, GLLMs do not accommodate autocorrelation in time series data, which refers to the dependence between consecutive observations. Moreover, as mentioned, the model proposed implicitly assumes that the response variables follow Poisson distributions [@coxe2009analysis], where the expectation and variability of response variables should equate, but this assumption can be easily violated in practice.
+```{r, include=FALSE}
+library(lme4)
+library(glmmTMB)
+data$Site <- as.factor(data$Site)
+data$Intervention <- as.factor(data$Intervention)
+data$Intervention <- relevel(data$Intervention, 
+                             ref = "preint")
+data$DofW <- as.factor(data$DofW)
+
+zerocal_lme = glmer(ZeroCal ~ (1|Site) + Intervention 
+                    + DofW + offset(log(Total)), data=data, family=poisson)
+zerocal_lme_nb = glmmTMB(ZeroCal ~ (1|Site) + offset(log(Total)) + Intervention 
+                        + DofW, data=data, family=nbinom1)
+AIC(zerocal_lme)
+AIC(zerocal_lme_nb)
+
+sugary_lme = glmer(Sugary ~ (1|Site) + offset(log(Total)) + Intervention 
+                    + DofW, data=data, family=poisson)
+sugary_lme_nb = glmmTMB(Sugary ~ (1|Site) + offset(log(Total)) + Intervention 
+                        + DofW, data=data, family=nbinom1)
+AIC(sugary_lme)
+AIC(sugary_lme_nb)
+```
+
+Based on our analysis, the Generalized Mixed Effect Models with the assumption that the response variables follow a negative binomial distribution outperform other models in terms of the Akaike Information Criterion (AIC), a widely used criterion for model selection. For zero-calorie beverage consumption, the model indicates that only the "discount+messaging" intervention has a statistically significant effect. Similarly, for sugary beverage consumption, the effect of the "discount+messaging" intervention is also significant. Additionally, the effects associated with "DofW=6" (Saturday) and "DofW=7" (Sunday) are significant, suggesting that, on average, sugary beverage consumption may vary between weekdays and weekends.
 
 ## Conclusions
 
-We recommend using GLMMs to fit the relationship between covariates and response variables. Based on different research interests, response variable should be either ZeroCal beverage consumption or sugary beverage consumption. The fixed-effect explanatory variables suggested are intervention, Total and DofW, and the random-effect explanatory variable is Site.
+Overall, to assess the impact of various interventions on the consumption of zero-calorie and sugary beverages, while accounting for site effects, we propose utilizing a generalized mixed-effects model with a negative binomial distribution assumption for both variables of interest. According to the model outputs, the "discount+messaging" intervention consistently shows statistical significance. Additionally, the effects associated with "DofW=6" (Day of Week = Saturday) and "DofW=7" (Day of Week = Sunday) are significant only in the models concerning sugary beverage consumption. Therefore, to enhance zero-calorie beverage intake, we recommend implementing a strategy that combines discounts with explicit messaging to customers. By including the total beverage consumption as an offset in our analysis, we observe that the day of the week typically does not exert a significant influence on the response variables. For more detailed insights, please refer to the statistical appendix.
 
 ## References
 
@@ -97,11 +132,114 @@ We recommend using GLMMs to fit the relationship between covariates and response
 
 ### Mathematical Formulation of Models
 
-Here is a formulation of the Generalized Linear Mixed Model within the context of this research. As suggested earlier, random effects can be placed on both the intervention's slope and intercept. Taking $y = ZeroCal, x_1 = Total, x_2 = Intervention, x_3 = DofW$, the model will take the format of 
 
+There are two types of generalized linear mixed models fitted in this report, adapted for different structures of data. For illustration purpose, only the two models for zerocal beverage sales are shown. The first model (Equation \ref{eq1}) is GLMM with Poisson distribution, which is suitable for count data where the counts are grouped by random effects. In this case, the random effect is the site.
+
+```{=tex}
 \begin{equation}
 \label{eq1}
-E(y_{ij}) = exp((\beta_0 + b_{0i}) + (\beta_1 + b_{1i} + b_1 x_1)\; x_2 + \beta_2 \; x_3 + \beta_3 \; x_1)
+\log(\text{Zerocal}_{ijk}) = \beta_0 + \beta_1 \cdot \text{Intervention}_i + \beta_2 \cdot \text{DoW} + \log(\text{Total}_{ijk}) + u_{j}
 \end{equation}
+```
+where "Zerocal" is the count for the daily sales of zerocal beverages, "DoW" encodes day of the week, and "Total" is the daily sales of all beverages. In addition, $\beta_0$ is the intercept, $\beta_1$ is the coefficient for intervention, $\beta_2$ is the coefficient for "DoW", and $u_j$ is the random effect for the j-th Site. Notice that $log(\text{Total})$ is regarded as an offset because we want its coefficient to be fixed at 1.
 
-where $b_{0i} \sim N(0,\sigma_1^2)$, $b_{1i} \sim N(0,\sigma_2^2)$ and $b_{1} \sim N(0,\sigma_3^2)$. Here, $i \in \{1,2,3\}$ is used to index the three sites, and $j\in \{1,2, \dots, 221\}$ is used to index the date. $\sigma_1$, $\sigma_2$ and $\sigma_3$ can be estimated using data, and $zero\_calorie_{ij}$ is assumed to have poisson distribution where its expectation should be equal to its variance. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome.
+The second model (Equation \ref{eq2}) is a GLMM with negative binomial distribution. Similar to the first model, it is also used for count data, but is more suitable when there is overdispersion (the variance is greater than the mean).
+
+```{=tex}
+\begin{equation}
+\label{eq2}
+\log(\text{Zerocal}_{ijk}) = \beta_0 + \beta_1 \cdot \text{Intervention}_i + \beta_2 \cdot \text{DoW} + \log(\text{Total}_{ijk}) + u_{j}
+\end{equation}
+```
+### Model Selection
+
+It is suggested in the formal analysis section that model should be selected based on AIC criterion. Table \ref{tab2} shows the AIC comparison.
+
+```{=tex}
+\begin{table}[htbp]
+    \centering
+    \caption{Model selection based on AIC criterion}
+    \label{tab2}
+    \begin{tabular}{ c|c|c }
+        \hline
+        GLMM Model & Zerocal beverage sales & Sugary beverage sales \\
+        \hline
+        Poisson            & 14874.39 & 12096.9 \\
+        Negative Binomial  & 6765.097 & 6529.67 \\
+        \hline
+    \end{tabular}
+\end{table}
+```
+THe GLMMs using negative binomial distribution are suggested because they give lower AIC scores.
+
+### Model Diagnostic
+
+```{r,include=FALSE}
+library(lme4)
+library(glmmTMB)
+library(DHARMa)
+library(here)
+library(readr)
+library(dplyr)
+data <- read_csv(here("rawdata/june1data.csv"))
+data$Site <- as.factor(data$Site)
+data$Intervention <- as.factor(data$Intervention)
+data$DofW <- as.factor(data$DofW)
+data$Intervention <- relevel(data$Intervention,ref="preint")
+```
+
+```{r, echo=FALSE}
+zerocal_lme_nb = glmmTMB(ZeroCal ~ (1|Site) + offset(log(Total)) + Intervention + DofW, data=data, family=nbinom1)
+output <- simulateResiduals(fittedModel = zerocal_lme_nb, plot = F)
+plotQQunif(output) 
+plotResiduals(output)
+```
+
+These two plots above correspond to the zero calories model. The qq-plot suggests a good model fit as it forms a relatively straight line. Regarding the residual plot, there are quantile deviations indicating that some data points fall outside the range of simulated values. However, since our focus is on inference rather than prediction and we lack information on the extent of deviation from the model expectation, this issue is not considered major.
+
+```{r, echo=FALSE}
+sugary_lme_nb = glmmTMB(Sugary ~ (1|Site) + offset(log(Total)) + Intervention 
+                        + DofW, data=data, family=nbinom1)
+output1 <- simulateResiduals(fittedModel = sugary_lme_nb, plot = F)
+plotQQunif(output1) 
+plotResiduals(output1)
+```
+
+For the sugary beverage model, we see a similar result to the zero calories model check.
+
+### Analysis Results
+Shown in table \ref{tab3} and \ref{tab4} is the result obtained from generalized linear mixed model using negative binomial distribution.
+
+\begin{table}[htbp]
+\centering
+\caption{Percent change in sales of zero-calorie beverages under intervention}
+\label{tab3}
+\begin{tabular}{c|c|c|c}
+\toprule
+Intervention & {Estimate} & {Standard Error} & {p-Value}\\
+\midrule
+Discount                                & 6.26\%  & 3.57\%  & 0.079\\
+Discount + discount messaging           & 14.87\% & 3.44\%  & 0.000\\
+Calorie messaging                       & 1.60\%  & 3.57\%  & 0.65\\
+Exercise equivalent messaging           & -3.44\%  & 3.64\%  & 0.34\\
+Calorie + exercise equivalent messaging & -4.10\% & 3.59\%  & 0.25\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Percent change in sales of sugary beverages under intervention}
+\label{tab4}
+\begin{tabular}{c|c|c|c}
+\toprule
+Intervention & {Estimate} & {Standard Error} & {p-Value}\\
+\midrule
+Discount                                & 0.45\%  & 3.35\%  & 0.89\\
+Discount + discount messaging           & 8.05\% & 3.24\%  & 0.013\\
+Calorie messaging                       & 4.26\%  & 3.24\%  & 0.19\\
+Exercise equivalent messaging           & -0.90\%  & 3.33\%  & 0.79\\
+Calorie + exercise equivalent messaging & -1.96\% & 3.30\%  & 0.55\\
+\bottomrule
+\end{tabular}
+\end{table}
