@@ -131,12 +131,114 @@ Overall, to assess the impact of various interventions on the consumption of zer
 
 ### Mathematical Formulation of Models
 
-Here is a formulation of the Generalized Linear Mixed Model within the context of this research. As suggested earlier, random effects can be placed on both the intervention's slope and intercept. Taking $y = ZeroCal, x_1 = Total, x_2 = Intervention, x_3 = DofW$, the model will take the format of
+
+There are two types of generalized linear mixed models fitted in this report, adapted for different structures of data. For illustration purpose, only the two models for zerocal beverage sales are shown. The first model (Equation \ref{eq1}) is GLMM with Poisson distribution, which is suitable for count data where the counts are grouped by random effects. In this case, the random effect is the site.
 
 ```{=tex}
 \begin{equation}
 \label{eq1}
-E(y_{ij}) = exp((\beta_0 + b_{0i}) + (\beta_1 + b_{1i} + b_1 x_1)\; x_2 + \beta_2 \; x_3 + \beta_3 \; x_1)
+\log(\text{Zerocal}_{ijk}) = \beta_0 + \beta_1 \cdot \text{Intervention}_i + \beta_2 \cdot \text{DoW} + \log(\text{Total}_{ijk}) + u_{j}
 \end{equation}
 ```
-where $b_{0i} \sim N(0,\sigma_1^2)$, $b_{1i} \sim N(0,\sigma_2^2)$ and $b_{1} \sim N(0,\sigma_3^2)$. Here, $i \in \{1,2,3\}$ is used to index the three sites, and $j\in \{1,2, \dots, 221\}$ is used to index the date. $\sigma_1$, $\sigma_2$ and $\sigma_3$ can be estimated using data, and $zero\_calorie_{ij}$ is assumed to have poisson distribution where its expectation should be equal to its variance. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome. When such an assumption is violated, usually quasi-maximum likelihood estimation is used. This method estimates the regression parameters without the need to specify a distribution for the outcome.
+where "Zerocal" is the count for the daily sales of zerocal beverages, "DoW" encodes day of the week, and "Total" is the daily sales of all beverages. In addition, $\beta_0$ is the intercept, $\beta_1$ is the coefficient for intervention, $\beta_2$ is the coefficient for "DoW", and $u_j$ is the random effect for the j-th Site. Notice that $log(\text{Total})$ is regarded as an offset because we want its coefficient to be fixed at 1.
+
+The second model (Equation \ref{eq2}) is a GLMM with negative binomial distribution. Similar to the first model, it is also used for count data, but is more suitable when there is overdispersion (the variance is greater than the mean).
+
+```{=tex}
+\begin{equation}
+\label{eq2}
+\log(\text{Zerocal}_{ijk}) = \beta_0 + \beta_1 \cdot \text{Intervention}_i + \beta_2 \cdot \text{DoW} + \log(\text{Total}_{ijk}) + u_{j}
+\end{equation}
+```
+### Model Selection
+
+It is suggested in the formal analysis section that model should be selected based on AIC criterion. Table \ref{tab2} shows the AIC comparison.
+
+```{=tex}
+\begin{table}[htbp]
+    \centering
+    \caption{Model selection based on AIC criterion}
+    \label{tab2}
+    \begin{tabular}{ c|c|c }
+        \hline
+        GLMM Model & Zerocal beverage sales & Sugary beverage sales \\
+        \hline
+        Poisson            & 14874.39 & 12096.9 \\
+        Negative Binomial  & 6765.097 & 6529.67 \\
+        \hline
+    \end{tabular}
+\end{table}
+```
+THe GLMMs using negative binomial distribution are suggested because they give lower AIC scores.
+
+### Model Diagnostic
+
+```{r,include=FALSE}
+library(lme4)
+library(glmmTMB)
+library(DHARMa)
+library(here)
+library(readr)
+library(dplyr)
+data <- read_csv(here("rawdata/june1data.csv"))
+data$Site <- as.factor(data$Site)
+data$Intervention <- as.factor(data$Intervention)
+data$DofW <- as.factor(data$DofW)
+data$Intervention <- relevel(data$Intervention,ref="preint")
+```
+
+```{r, echo=FALSE}
+zerocal_lme_nb = glmmTMB(ZeroCal ~ (1|Site) + offset(log(Total)) + Intervention + DofW, data=data, family=nbinom1)
+output <- simulateResiduals(fittedModel = zerocal_lme_nb, plot = F)
+plotQQunif(output) 
+plotResiduals(output)
+```
+
+These two plots above correspond to the zero calories model. The qq-plot suggests a good model fit as it forms a relatively straight line. Regarding the residual plot, there are quantile deviations indicating that some data points fall outside the range of simulated values. However, since our focus is on inference rather than prediction and we lack information on the extent of deviation from the model expectation, this issue is not considered major.
+
+```{r, echo=FALSE}
+sugary_lme_nb = glmmTMB(Sugary ~ (1|Site) + offset(log(Total)) + Intervention 
+                        + DofW, data=data, family=nbinom1)
+output1 <- simulateResiduals(fittedModel = sugary_lme_nb, plot = F)
+plotQQunif(output1) 
+plotResiduals(output1)
+```
+
+For the sugary beverage model, we see a similar result to the zero calories model check.
+
+### Analysis Results
+Shown in table \ref{tab3} and \ref{tab4} is the result obtained from generalized linear mixed model using negative binomial distribution.
+
+\begin{table}[htbp]
+\centering
+\caption{Percent change in sales of zero-calorie beverages under intervention}
+\label{tab3}
+\begin{tabular}{c|c|c|c}
+\toprule
+Intervention & {Estimate} & {Standard Error} & {p-Value}\\
+\midrule
+Discount                                & 6.26\%  & 3.57\%  & 0.079\\
+Discount + discount messaging           & 14.87\% & 3.44\%  & 0.000\\
+Calorie messaging                       & 1.60\%  & 3.57\%  & 0.65\\
+Exercise equivalent messaging           & -3.44\%  & 3.64\%  & 0.34\\
+Calorie + exercise equivalent messaging & -4.10\% & 3.59\%  & 0.25\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Percent change in sales of sugary beverages under intervention}
+\label{tab4}
+\begin{tabular}{c|c|c|c}
+\toprule
+Intervention & {Estimate} & {Standard Error} & {p-Value}\\
+\midrule
+Discount                                & 0.45\%  & 3.35\%  & 0.89\\
+Discount + discount messaging           & 8.05\% & 3.24\%  & 0.013\\
+Calorie messaging                       & 4.26\%  & 3.24\%  & 0.19\\
+Exercise equivalent messaging           & -0.90\%  & 3.33\%  & 0.79\\
+Calorie + exercise equivalent messaging & -1.96\% & 3.30\%  & 0.55\\
+\bottomrule
+\end{tabular}
+\end{table}
