@@ -40,7 +40,6 @@ This is an experimental design where data are collected over 30 weeks, from Octo
     \end{tabular}
 \end{table}
 ```
-
 There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. Since neither these measurements themselves nor their links with the consumption of ZeroCal/Sugary beverages are the main focus of the study, the missing values in these columns should not be given specific attention. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period and two isolated cases of missing entries. Such occurrences could be due to public holidays or temporary closures for renovation. In general, such missing data can be classified as missing at random.
 
 ## Exploratory Data Analysis
@@ -103,19 +102,20 @@ There are two types of generalized linear mixed models fitted in this report, ad
 \log(\text{Zerocal}_{ijk}) = \beta_0 + \beta_1 \cdot \text{Intervention}_i + \beta_2 \cdot \text{DoW} + \log(\text{Total}_{ijk}) + u_{j}
 \end{equation}
 ```
-
 where "Zerocal" is the count for the daily sales of zerocal beverages, "DoW" encodes day of the week, and "Total" is the daily sales of all beverages. In addition, $\beta_0$ is the intercept, $\beta_1$ is the coefficient for intervention, $\beta_2$ is the coefficient for "DoW", and $u_j$ is the random effect for the j-th Site. Notice that $log(\text{Total})$ is regarded as an offset because we want its coefficient to be fixed at 1.
 
 The second model (Equation \ref{eq2}) is a GLMM with negative binomial distribution. Similar to the first model, it is also used for count data, but is more suitable when there is overdispersion (the variance is greater than the mean).
+
 ```{=tex}
 \begin{equation}
 \label{eq2}
 \log(\text{Zerocal}_{ijk}) = \beta_0 + \beta_1 \cdot \text{Intervention}_i + \beta_2 \cdot \text{DoW} + \log(\text{Total}_{ijk}) + u_{j}
 \end{equation}
 ```
-
 ### Model Selection
+
 It is suggested in the formal analysis section that model should be selected based on AIC criterion. Table \ref{tab2} shows the AIC comparison.
+
 ```{=tex}
 \begin{table}[htbp]
     \centering
@@ -132,7 +132,6 @@ It is suggested in the formal analysis section that model should be selected bas
 \end{table}
 ```
 THe GLMMs using negative binomial distribution are suggested because they give lower AIC scores.
-
 
 ### Model Diagnostic
 
@@ -152,19 +151,22 @@ data$Intervention <- relevel(data$Intervention,ref="preint")
 
 ```{r, echo=FALSE}
 zerocal_lme_nb = glmmTMB(ZeroCal ~ (1|Site) + offset(log(Total)) + Intervention + DofW, data=data, family=nbinom1)
-output <- simulateResiduals(fittedModel = zerocal_lme_nb, plot = F)
-plotQQunif(output) 
-plotResiduals(output)
+par(mfrow = c(1, 2))
+plotQQunif(zerocal_lme_nb)
+plotResiduals(zerocal_lme_nb)
+testDispersion(zerocal_lme_nb,plot=F)
 ```
-These two plots above correspond to the zero calories model. The qq-plot suggests a good model fit as it forms a relatively straight line. Regarding the residual plot, there are quantile deviations indicating that some data points fall outside the range of simulated values. However, since our focus is on inference rather than prediction and we lack information on the extent of deviation from the model expectation, this issue is not considered major.
 
 ```{r, echo=FALSE}
 sugary_lme_nb = glmmTMB(Sugary ~ (1|Site) + offset(log(Total)) + Intervention 
                         + DofW, data=data, family=nbinom1)
-output1 <- simulateResiduals(fittedModel = sugary_lme_nb, plot = F)
-plotQQunif(output1) 
-plotResiduals(output1)
+par(mfrow = c(1, 2))
+plotQQunif(sugary_lme_nb) 
+plotResiduals(sugary_lme_nb)
+testDispersion(sugary_lme_nb,plot=F)
 ```
+For both models, we generated QQ-plots and residual plots, and we also conducted tests to determine if there's overdispersion. The QQ-plots indicate a good model fit as they form relatively straight lines. Regarding the residual plot, there are quantile deviations indicating that some data points fall outside the range of simulated values. However, since our focus is on inference rather than prediction, and we lack information on the extent of deviation from the model expectation, this issue is not considered major. This also suggests that despite not being the optimal model, this model is still adequate. Lastly, we want to test whether there's overdispersion, meaning whether the variance of the response is greater than what's assumed by the model. Both dispersion numbers are close to 1, which indicates no major overdispersion.
 
-For the sugary beverage model, we see a similar result to the zero calories model check.
+### Limitations
 
+When utilizing a GLMM model, a significant drawback arises from its inability to accommodate the time series structure of the data. In other words, this model fails to capture the dependent structure where the output variable is linearly dependent on its previous values.
