@@ -84,15 +84,7 @@ In this study, our primary aim is to examine the impacts of various intervention
 
 Given that the consumption data consist of non-negative integers, a logical choice for the link function is the logarithm transformation applied to the ZeroCal, Sugary, and Total variables. This transformation ensures that the model's outputs remain positive, aligning with the nature of the consumption data.
 
-Hence, the proposed models are
-
-```{=tex}
-\begin{align*}
-\log(\text{ZeroCal}_{ij}) &= (\beta_0+b_i) + \beta_1\text{Intervention} + \beta_2\text{DofW} + \text{offset}(\log(\text{Total}))\\
-\log(\text{Sugary}_{ij}) &= (\beta_0+b_i) + \beta_1\text{Intervention} + \beta_2\text{DofW} + \text{offset}(\log(\text{Total}))
-\end{align*}
-```
-where $b_i \sim N(0,\sigma^2)$ represents the random effect from Site. Note that response variables, which are counts, can be assumed to follow either Poisson or Negative Binomial distribution under log link function. The former is more common but also more restrictive.
+Hence, the proposed models are in Equation \ref{eq1} and \ref{eq2}. Note that the response variables, which are counts, can be assumed to follow either Poisson or Negative Binomial distribution using log link function. The former is more common but also more restrictive.
 
 ```{r, include=FALSE}
 library(lme4)
