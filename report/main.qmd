@@ -86,31 +86,7 @@ Given that the consumption data consist of non-negative integers, a logical choi
 
 Hence, the proposed models are in Equation \ref{eq1} and \ref{eq2}. Note that the response variables, which are counts, can be assumed to follow either Poisson or Negative Binomial distribution using log link function. The former is more common but also more restrictive.
 
-```{r, include=FALSE}
-library(lme4)
-library(glmmTMB)
-data$Site <- as.factor(data$Site)
-data$Intervention <- as.factor(data$Intervention)
-data$Intervention <- relevel(data$Intervention, 
-                             ref = "preint")
-data$DofW <- as.factor(data$DofW)
-
-zerocal_lme = glmer(ZeroCal ~ (1|Site) + Intervention 
-                    + DofW + offset(log(Total)), data=data, family=poisson)
-zerocal_lme_nb = glmmTMB(ZeroCal ~ (1|Site) + offset(log(Total)) + Intervention 
-                        + DofW, data=data, family=nbinom1)
-AIC(zerocal_lme)
-AIC(zerocal_lme_nb)
-
-sugary_lme = glmer(Sugary ~ (1|Site) + offset(log(Total)) + Intervention 
-                    + DofW, data=data, family=poisson)
-sugary_lme_nb = glmmTMB(Sugary ~ (1|Site) + offset(log(Total)) + Intervention 
-                        + DofW, data=data, family=nbinom1)
-AIC(sugary_lme)
-AIC(sugary_lme_nb)
-```
-
-Based on our analysis, the Generalized Mixed Effect Models with the assumption that the response variables follow a negative binomial distribution outperform other models in terms of the Akaike Information Criterion (AIC), a widely used criterion for model selection. For zero-calorie beverage consumption, the model indicates that only the "discount+messaging" intervention has a statistically significant effect. Similarly, for sugary beverage consumption, the effect of the "discount+messaging" intervention is also significant. Additionally, the effects associated with "DofW=6" (Saturday) and "DofW=7" (Sunday) are significant, suggesting that, on average, sugary beverage consumption may vary between weekdays and weekends.
+Based on the analysis results provided in the appendix section, we conclude that a negative binomial distributed GLMM is a better model due to its lower AIC. We suspect this improvement may be attributed to the negative binomial distribution allowing the conditional variance of the outcome variable to be greater than its conditional mean, providing greater flexibility in model fitting.
 
 ## Conclusions
 
@@ -243,3 +219,5 @@ Calorie + exercise equivalent messaging & -1.96\% & 3.30\%  & 0.55\\
 \end{tabular}
 \end{table}
 ```
+
+Based on the two tables above, the Generalized Mixed Effect Models with the assumption that the response variables follow a negative binomial distribution outperform other models in terms of the Akaike Information Criterion (AIC), a widely used criterion for model selection. For zero-calorie beverage consumption, the model indicates that only the "discount+messaging" intervention has a statistically significant effect. Similarly, for sugary beverage consumption, the effect of the "discount+messaging" intervention is also significant. Additionally, the effects associated with "DofW=6" (Saturday) and "DofW=7" (Sunday) are significant, suggesting that, on average, sugary beverage consumption may vary between weekdays and weekends.
