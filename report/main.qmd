@@ -80,11 +80,12 @@ ggplot(data = data, aes(x = Count, y = ZeroCal, group = Site, color = Site)) +
 
 It is recommended to implement a Generalized Linear Mixed Model (GLMM) to address the problems. A GLMM, an extension of the Linear Mixed Model (LMM) [@winter2013linear], can incorporate both fixed and random effects, and also accommodate the response variable being a count variable through a link function [@dobson2018introduction]. Specifically, while the fixed effects assess the association of covariates with the response variable across the overall population---serving as a baseline---the random effects account for variations in some associations across different entities or individuals. Link function can guarantee that the range of model outputs matches with the range of values that can be observed, which is the advantage of GLMM over LMM.
 
-In this study, our primary aim is to examine the impacts of various interventions. Hence, it is advisable to consider the intervention variable as a fixed effect. Furthermore, the Day of Week (DofW) should be treated as fixed effects too, since they are consistent across all three sites. The random effect in this analysis should be the Site, which accounts for variability in the observations over time. Although the total consumption volume is a plausible predictor for both variables of interest—zero-calorie and sugary beverage consumption—it is more fitting to incorporate it as an offset term in the model. This approach ensures that its influence on the model is "structural," with a fixed coefficient of one, reflecting its proportional effect on the response variables.
+In this study, our primary aim is to examine the impacts of various interventions. Hence, it is advisable to consider the intervention variable as a fixed effect. Furthermore, the Day of Week (DofW) should be treated as fixed effects too, since they are consistent across all three sites. The random effect in this analysis should be the Site, which accounts for variability in the observations over time. Although the total consumption volume is a plausible predictor for both variables of interest---zero-calorie and sugary beverage consumption---it is more fitting to incorporate it as an offset term in the model. This approach ensures that its influence on the model is "structural," with a fixed coefficient of one, reflecting its proportional effect on the response variables.
 
 Given that the consumption data consist of non-negative integers, a logical choice for the link function is the logarithm transformation applied to the ZeroCal, Sugary, and Total variables. This transformation ensures that the model's outputs remain positive, aligning with the nature of the consumption data.
 
 Hence, the proposed models are
+
 ```{=tex}
 \begin{align*}
 \log(\text{ZeroCal}_{ij}) &= (\beta_0+b_i) + \beta_1\text{Intervention} + \beta_2\text{DofW} + \text{offset}(\log(\text{Total}))\\
@@ -131,7 +132,6 @@ Overall, to assess the impact of various interventions on the consumption of zer
 ## Statistical Appendix
 
 ### Mathematical Formulation of Models
-
 
 There are two types of generalized linear mixed models fitted in this report, adapted for different structures of data. For illustration purpose, only the two models for zerocal beverage sales are shown. The first model (Equation \ref{eq1}) is GLMM with Poisson distribution, which is suitable for count data where the counts are grouped by random effects. In this case, the random effect is the site.
 
@@ -196,7 +196,6 @@ plotResiduals(zerocal_lme_nb)
 testDispersion(zerocal_lme_nb,plot=F)
 ```
 
-
 ```{r, echo=FALSE}
 sugary_lme_nb = glmmTMB(Sugary ~ (1|Site) + offset(log(Total)) + Intervention 
                         + DofW, data=data, family=nbinom1)
@@ -205,6 +204,7 @@ plotQQunif(sugary_lme_nb)
 plotResiduals(sugary_lme_nb)
 testDispersion(sugary_lme_nb,plot=F)
 ```
+
 For both models, we generated QQ-plots and residual plots, and we also conducted tests to determine if there's overdispersion. The QQ-plots indicate a good model fit as they form relatively straight lines. Regarding the residual plot, there are quantile deviations indicating that some data points fall outside the range of simulated values. However, since our focus is on inference rather than prediction, and we lack information on the extent of deviation from the model expectation, this issue is not considered major. This also suggests that despite not being the optimal model, this model is still adequate. Lastly, we want to test whether there's overdispersion, meaning whether the variance of the response is greater than what's assumed by the model. Both dispersion numbers are close to 1, which indicates no major overdispersion.
 
 ### Limitations
@@ -212,8 +212,10 @@ For both models, we generated QQ-plots and residual plots, and we also conducted
 When utilizing a GLMM model, a significant drawback arises from its inability to accommodate the time series structure of the data. In other words, this model fails to capture the dependent structure where the output variable is linearly dependent on its previous values.
 
 ### Analysis Results
+
 Shown in table \ref{tab3} and \ref{tab4} is the result obtained from generalized linear mixed model using negative binomial distribution.
 
+```{=tex}
 \begin{table}[htbp]
 \centering
 \caption{Percent change in sales of zero-calorie beverages under intervention}
@@ -230,7 +232,8 @@ Calorie + exercise equivalent messaging & -4.10\% & 3.59\%  & 0.25\\
 \bottomrule
 \end{tabular}
 \end{table}
-
+```
+```{=tex}
 \begin{table}[htbp]
 \centering
 \caption{Percent change in sales of sugary beverages under intervention}
@@ -247,3 +250,4 @@ Calorie + exercise equivalent messaging & -1.96\% & 3.30\%  & 0.55\\
 \bottomrule
 \end{tabular}
 \end{table}
+```
