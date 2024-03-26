@@ -180,7 +180,7 @@ Shown in table \ref{tab3} and \ref{tab4} is the result obtained from generalized
 Intervention & {Estimate} & {Standard Error} & {p-Value}\\
 \midrule
 Discount                                & 6.26\%  & 3.57\%  & 0.079\\
-Discount + discount messaging           & 1.49\% & 3.44\%  & 0.000\\
+Discount + discount messaging           & 14.87\% & 3.44\%  & 0.000\\
 Calorie messaging                       & 1.60\%  & 3.57\%  & 0.65\\
 Exercise equivalent messaging           & -3.44\%  & 3.64\%  & 0.34\\
 Calorie + exercise equivalent messaging & -4.10\% & 3.59\%  & 0.25\\
