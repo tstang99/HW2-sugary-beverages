@@ -139,6 +139,51 @@ It is suggested in the formal analysis section that model should be selected bas
 ```
 THe GLMMs using negative binomial distribution are suggested because they give lower AIC scores.
 
+### Analysis Results
+
+Shown in table \ref{tab3} and \ref{tab4} is the result obtained from generalized linear mixed model using negative binomial distribution.
+
+```{=tex}
+\begin{table}[htbp]
+\centering
+\caption{Percent change in sales of zero-calorie beverages under intervention}
+\label{tab3}
+\begin{tabular}{c|c|c|c}
+\toprule
+Intervention & {Estimate} & {Standard Error} & {p-Value}\\
+\midrule
+Discount                                & 6.26\%  & 3.57\%  & 0.079\\
+Discount + discount messaging           & 14.87\% & 3.44\%  & 0.000\\
+Calorie messaging                       & 1.60\%  & 3.57\%  & 0.65\\
+Exercise equivalent messaging           & -3.44\%  & 3.64\%  & 0.34\\
+Calorie + exercise equivalent messaging & -4.10\% & 3.59\%  & 0.25\\
+\bottomrule
+\end{tabular}
+\end{table}
+```
+
+```{=tex}
+\begin{table}[htbp]
+\centering
+\caption{Percent change in sales of sugary beverages under intervention}
+\label{tab4}
+\begin{tabular}{c|c|c|c}
+\toprule
+Intervention & {Estimate} & {Standard Error} & {p-Value}\\
+\midrule
+Discount                                & 0.45\%  & 3.35\%  & 0.89\\
+Discount + discount messaging           & 8.05\% & 3.24\%  & 0.013\\
+Calorie messaging                       & 4.26\%  & 3.24\%  & 0.19\\
+Exercise equivalent messaging           & -0.90\%  & 3.33\%  & 0.79\\
+Calorie + exercise equivalent messaging & -1.96\% & 3.30\%  & 0.55\\
+\bottomrule
+\end{tabular}
+\end{table}
+```
+Based on the two tables above, the Generalized Mixed Effect Models with the assumption that the response variables follow a negative binomial distribution outperform other models in terms of the Akaike Information Criterion (AIC), a widely used criterion for model selection. For zero-calorie beverage consumption, the model indicates that only the "discount+messaging" intervention has a statistically significant effect. Similarly, for sugary beverage consumption, the effect of the "discount+messaging" intervention is also significant. Additionally, the effects associated with "DofW=6" (Saturday) and "DofW=7" (Sunday) are significant, suggesting that, on average, sugary beverage consumption may vary between weekdays and weekends.
+
+By including the total beverage consumption as an offset in our analysis, we observe that the day of the week typically does not exert a significant influence on the response variables. 
+
 ### Model Diagnostic
 
 ```{r,include=FALSE}
@@ -177,47 +222,3 @@ For both models, we generated QQ-plots and residual plots, and we also conducted
 ### Limitations
 
 When utilizing a GLMM model, a significant drawback arises from its inability to accommodate the time series structure of the data. In other words, this model fails to capture the dependent structure where the output variable is linearly dependent on its previous values.
-
-### Analysis Results
-
-Shown in table \ref{tab3} and \ref{tab4} is the result obtained from generalized linear mixed model using negative binomial distribution.
-
-```{=tex}
-\begin{table}[htbp]
-\centering
-\caption{Percent change in sales of zero-calorie beverages under intervention}
-\label{tab3}
-\begin{tabular}{c|c|c|c}
-\toprule
-Intervention & {Estimate} & {Standard Error} & {p-Value}\\
-\midrule
-Discount                                & 6.26\%  & 3.57\%  & 0.079\\
-Discount + discount messaging           & 14.87\% & 3.44\%  & 0.000\\
-Calorie messaging                       & 1.60\%  & 3.57\%  & 0.65\\
-Exercise equivalent messaging           & -3.44\%  & 3.64\%  & 0.34\\
-Calorie + exercise equivalent messaging & -4.10\% & 3.59\%  & 0.25\\
-\bottomrule
-\end{tabular}
-\end{table}
-```
-```{=tex}
-\begin{table}[htbp]
-\centering
-\caption{Percent change in sales of sugary beverages under intervention}
-\label{tab4}
-\begin{tabular}{c|c|c|c}
-\toprule
-Intervention & {Estimate} & {Standard Error} & {p-Value}\\
-\midrule
-Discount                                & 0.45\%  & 3.35\%  & 0.89\\
-Discount + discount messaging           & 8.05\% & 3.24\%  & 0.013\\
-Calorie messaging                       & 4.26\%  & 3.24\%  & 0.19\\
-Exercise equivalent messaging           & -0.90\%  & 3.33\%  & 0.79\\
-Calorie + exercise equivalent messaging & -1.96\% & 3.30\%  & 0.55\\
-\bottomrule
-\end{tabular}
-\end{table}
-```
-Based on the two tables above, the Generalized Mixed Effect Models with the assumption that the response variables follow a negative binomial distribution outperform other models in terms of the Akaike Information Criterion (AIC), a widely used criterion for model selection. For zero-calorie beverage consumption, the model indicates that only the "discount+messaging" intervention has a statistically significant effect. Similarly, for sugary beverage consumption, the effect of the "discount+messaging" intervention is also significant. Additionally, the effects associated with "DofW=6" (Saturday) and "DofW=7" (Sunday) are significant, suggesting that, on average, sugary beverage consumption may vary between weekdays and weekends.
-
-By including the total beverage consumption as an offset in our analysis, we observe that the day of the week typically does not exert a significant influence on the response variables. 
