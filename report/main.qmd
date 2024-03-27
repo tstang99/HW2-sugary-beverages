@@ -160,6 +160,9 @@ Calorie + exercise equivalent messaging & -4.10\% & 3.59\%  & 0.25\\
 \end{tabular}
 \end{table}
 ```
+<<<<<<< HEAD
+=======
+
 ```{=tex}
 \begin{table}[htbp]
 \centering
@@ -178,7 +181,9 @@ Calorie + exercise equivalent messaging & -1.96\% & 3.30\%  & 0.55\\
 \end{tabular}
 \end{table}
 ```
+
 Based on the two tables above, the GLMM with a negative binomial distribution outperform other models in terms of the Akaike Information Criterion (AIC), a widely used criterion for model selection. For zero-calorie beverage consumption, the model indicates that only the "discount+messaging" intervention has a statistically significant effect. Similarly, for sugary beverage consumption, the effect of the "discount+messaging" intervention is also significant. Additionally, the effects associated with "DofW=6" (Saturday) and "DofW=7" (Sunday) are significant, suggesting that, on average, sugary beverage consumption may vary between weekdays and weekends. Lastly, by including the total beverage consumption as an offset in our analysis, we observe that the day of the week typically does not exert a significant influence on the response variables.
+
 
 ### Model Diagnostic
 
