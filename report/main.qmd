@@ -86,6 +86,8 @@ Given that the consumption data consist of non-negative integers, a viable choic
 
 Based on the analysis results provided in the appendix section, we conclude that a negative binomial distributed GLMM is a better model due to its lower AIC. We suspect this improvement may be attributed to the negative binomial distribution allowing the conditional variance of the outcome variable to be greater than its conditional mean, providing greater flexibility in model fitting.
 
+To investigate whether the intervention effects are differed by sites, we propose a generalized linear model using negative binomial distribution. This model should contain the interaction term between site and intervention, the offset of total daily sales, and the day of week to account for the weekly fluctuation. The following analysis can be conducted by analyzing the coefficient of the interaction terms.
+
 ## Conclusions
 
 Overall, to assess the impact of various interventions on the consumption of zero calorie and sugary beverages at the three sites, we propose a GLMM with a negative binomial distribution for both variables of interest. According to the model outputs, only discount along with discount messaging has significant impact on the beverage sales. It is effective in promoting the consumption of zero calorie beverages, and counter intuitively the consumption of sugary beverages as well. Therefore, to enhance zero calorie beverage consumption, we recommend implementing a strategy that combines discounts with explicit messaging to customers. For more detailed insights, please refer to the statistical appendix.
@@ -222,3 +224,66 @@ For both models, we generated QQ-plots and residual plots, and we also conducted
 ### Limitations
 
 When utilizing a GLMM model, a significant drawback arises from its inability to accommodate the time series structure of the data. In other words, this model fails to capture the dependent structure where the output variable is linearly dependent on its previous values.
+
+### GLM for Evaluating Intervention Effects by Site
+As shown in equation \ref{eq3}, the GLM model uses a logarithmic link function on the response variables.
+```{=tex}
+\begin{equation}
+\label{eq3}
+\log(\text{zero calorie}) = \beta_0 + \beta_1 \cdot \text{Intervention : Site} + \beta_2 \cdot \text{DoW} + \log(\text{Total})
+\end{equation}
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(gridExtra)
+
+zero_glm_result <- data.frame(
+  site = rep(c('chop', 'HF', 'NS'), 5),
+  intervention = rep(c('both', 'cal', 'dis', 'dismes', 'exer'), each = 3),
+  percentage_effect = c(48.07499, -56.12425, 8.16578, 46.66572, -33.13211, 7.44004, 46.11542, 7.81893, 16.38598, 46.34593, -1.24398, 87.42991, 47.76633, -42.07657, 12.54518),
+  se = c(10.75268, 10.99167, 10.86373, 10.75422, 10.92486, 10.87687, 10.75998, 10.86428, 10.86102, 10.75745, 10.87009, 10.77941, 10.75752, 11.02873, 10.95253),
+  p_value = c(7.79e-06, 3.29e-07, 0.452258, 0.000144, 0.002424, 0.49396, 1.82e-05, 0.471715, 0.131292, 1.65e-05, 0.908889, 5.03e-16, 8.95e-06, 0.000136, 0.252038)
+)
+
+p1 = ggplot(zero_glm_result, aes(x = intervention, y = percentage_effect, fill = site)) +
+  geom_bar(stat='identity', position=position_dodge(width=0.8), width=0.7) +
+  geom_errorbar(aes(ymin = percentage_effect - se, ymax = percentage_effect + se),
+                position=position_dodge(width=0.8), width=0.25) +
+  scale_fill_brewer(palette="Pastel1") +
+  theme_minimal() +
+  theme(legend.position="bottom") +
+  labs(x = 'Intervention', y = 'Percentage Effect (%)') + 
+  ggtitle("Zero calorie beverages")
+
+sugary_glm_result <- data.frame(
+  site = rep(c('chop', 'HF', 'NS'), 5),
+  intervention = rep(c('both', 'cal', 'dis', 'dismes', 'exer'), each = 3),
+  Estimate = c(0.197987, 0.112814,
+               -0.163545, 0.292919, 0.082066, -0.178256, 0.297091, -0.132208,
+               -0.101400, 0.263538, -0.142257, 0.583786, 0.234858, 0.017126,
+               0.091903),
+  Std.Error = c(0.104370, 0.105273,
+                 0.105756, 0.104323, 0.105238, 0.105937, 0.104387, 0.105700,
+                 0.105765, 0.104378, 0.105623, 0.104731, 0.104383, 0.106071,
+                 0.106241),
+  Pr = c(0.05783, 0.28389, 0.12200, 0.00499, 0.43550, 0.09244, 0.00443,
+  0.21101,0.33770,0.01157, 0.17803, 2.49e-08, 0.02445, 0.87173, 0.38701))
+
+
+p2 = ggplot(zero_glm_result, aes(x = intervention, y = percentage_effect, fill = site)) +
+  geom_bar(stat='identity', position=position_dodge(width=0.8), width=0.7) +
+  geom_errorbar(aes(ymin = percentage_effect - se, ymax = percentage_effect + se),
+                position=position_dodge(width=0.8), width=0.25) +
+  scale_fill_brewer(palette="Pastel1") +
+  theme_minimal() +
+  theme(legend.position="bottom") +
+  labs(x = 'Intervention', y = 'Percentage Effect (%)') + 
+  ggtitle("Sugary beverages")
+
+grid.arrange(p1, p2, ncol = 2)
+```
+
+```{r, echo = FALSE}
+
+```
+
