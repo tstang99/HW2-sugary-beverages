@@ -3,8 +3,7 @@ title: "What is the best way to promote zero calories beverages?"
 format: 
   pdf:
     fontsize: 11pt
-header-includes:
-  - \usepackage{float}
+geometry: "left=2.5cm,right=2.5cm,top=2cm,bottom=2cm"
 editor: visual
 bibliography: ../reference/reference.bib
 author: Ivy Liu, Zefan Liu, Tom Tang
@@ -143,8 +142,6 @@ It is suggested in the formal analysis section that model should be selected bas
 ```
 The GLMMs using negative binomial distribution are suggested because they give lower AIC scores.
 
-### Analysis Results
-
 ### GLMM model output
 
 Shown in table \ref{tab3} and \ref{tab4} is the result obtained from generalized linear mixed model using negative binomial distribution.
@@ -187,7 +184,7 @@ Calorie + exercise equivalent messaging & -1.96\% & 3.30\%  & 0.55\\
 ```
 Based on the two tables above, the GLMM with a negative binomial distribution outperform other models in terms of the Akaike Information Criterion (AIC), a widely used criterion for model selection. For zero-calorie beverage consumption, the model indicates that only the "discount+messaging" intervention has a statistically significant effect. Similarly, for sugary beverage consumption, the effect of the "discount+messaging" intervention is also significant. Additionally, the effects associated with "DofW=6" (Saturday) and "DofW=7" (Sunday) are significant, suggesting that, on average, sugary beverage consumption may vary between weekdays and weekends. Lastly, by including the total beverage consumption as an offset in our analysis, we observe that the day of the week typically does not exert a significant influence on the response variables.
 
-### GLM for Evaluating Intervention Effects by Site
+### GLM for Evaluating Intervention Effects by Sites
 
 As shown in equation \ref{eq3}, the GLM model uses a logarithmic link function on the response variables.
 
@@ -197,8 +194,7 @@ As shown in equation \ref{eq3}, the GLM model uses a logarithmic link function o
 \log(\text{zero calorie}) = \beta_0 + \beta_1 \cdot \text{Intervention : Site} + \beta_2 \cdot \text{DoW} + \log(\text{Total})
 \end{equation}
 ```
-zero calorie beverages:
-
+Here shows the selected model output for zero calorie beverages.
 ```{=tex}
 \begin{verbatim}
                               Estimate Std. Error z value Pr(>|z|)    
@@ -219,8 +215,7 @@ SiteHF:Interventionexcer    -0.4207657  0.1102873  -3.815 0.000136 ***
 SiteNS:Interventionexcer     0.1254518  0.1095253   1.145 0.252038    
 \end{verbatim}
 ```
-sugary beverages:
-
+Here shows the selected model output for sugary calorie beverages.
 ```{=tex}
 \begin{verbatim}
                              Estimate Std. Error z value Pr(>|z|)    
