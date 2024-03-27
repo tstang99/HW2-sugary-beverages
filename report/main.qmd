@@ -3,6 +3,8 @@ title: "What is the best way to promote zero calories beverages?"
 format: 
   pdf:
     fontsize: 11pt
+header-includes:
+  - \usepackage{float}
 editor: visual
 bibliography: ../reference/reference.bib
 author: Ivy Liu, Zefan Liu, Tom Tang
@@ -281,5 +283,47 @@ p2 = ggplot(sugary_glm_result, aes(x = intervention, y = percentage_effect, fill
   ggtitle("Sugary beverages")
 
 grid.arrange(p1, p2, ncol = 2)
+```
+zero calorie beverages:
+```{=tex}
+\begin{verbatim}
+                              Estimate Std. Error z value Pr(>|z|)    
+Sitechop:Interventionboth    0.4807499  0.1075268   4.471 7.79e-06 ***
+SiteHF:Interventionboth     -0.5612425  0.1099167  -5.106 3.29e-07 ***
+SiteNS:Interventionboth      0.0816578  0.1086373   0.752 0.452258    
+Sitechop:Interventioncal     0.4665212  0.1075422   4.338 1.44e-05 ***
+SiteHF:Interventioncal      -0.3313211  0.1092486  -3.033 0.002424 ** 
+SiteNS:Interventioncal       0.0744004  0.1087687   0.684 0.493960    
+Sitechop:Interventiondis     0.4611542  0.1075998   4.286 1.82e-05 ***
+SiteHF:Interventiondis       0.0781893  0.1086428   0.720 0.471715    
+SiteNS:Interventiondis       0.1638958  0.1086102   1.509 0.131292    
+Sitechop:Interventiondismes  0.4634593  0.1075745   4.308 1.65e-05 ***
+SiteHF:Interventiondismes   -0.0124398  0.1087009  -0.114 0.908889    
+SiteNS:Interventiondismes    0.8742991  0.1077941   8.111 5.03e-16 ***
+Sitechop:Interventionexcer   0.4776633  0.1075572   4.441 8.95e-06 ***
+SiteHF:Interventionexcer    -0.4207657  0.1102873  -3.815 0.000136 ***
+SiteNS:Interventionexcer     0.1254518  0.1095253   1.145 0.252038    
+\end{verbatim}
+```
+sugary beverages:
+```{=tex}
+\begin{verbatim}
+                             Estimate Std. Error z value Pr(>|z|)    
+Sitechop:Interventionboth    0.197987   0.104370   1.897  0.05783 .  
+SiteHF:Interventionboth      0.112814   0.105273   1.072  0.28389    
+SiteNS:Interventionboth     -0.163545   0.105756  -1.546  0.12200    
+Sitechop:Interventioncal     0.292919   0.104323   2.808  0.00499 ** 
+SiteHF:Interventioncal       0.082066   0.105238   0.780  0.43550    
+SiteNS:Interventioncal      -0.178256   0.105937  -1.683  0.09244 .  
+Sitechop:Interventiondis     0.297091   0.104387   2.846  0.00443 ** 
+SiteHF:Interventiondis      -0.132208   0.105700  -1.251  0.21101    
+SiteNS:Interventiondis      -0.101400   0.105765  -0.959  0.33770    
+Sitechop:Interventiondismes  0.263538   0.104378   2.525  0.01157 *  
+SiteHF:Interventiondismes   -0.142257   0.105623  -1.347  0.17803    
+SiteNS:Interventiondismes    0.583786   0.104731   5.574 2.49e-08 ***
+Sitechop:Interventionexcer   0.234858   0.104383   2.250  0.02445 *  
+SiteHF:Interventionexcer     0.017126   0.106071   0.161  0.87173    
+SiteNS:Interventionexcer     0.091903   0.106241   0.865  0.38701    
+\end{verbatim}
 ```
 From the above plots, we conclude that the intervention methods have different effects at the three sites. The differing impacts of interventions across sites may suggest underlying demographic differences. These could be in terms of age, income, health consciousness, or other socio-cultural factors that influence purchasing behaviors. This highlights the necessity for customized strategies that consider the unique demographic and behavioral profiles of different populations.
