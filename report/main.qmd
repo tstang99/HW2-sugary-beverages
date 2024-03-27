@@ -86,11 +86,11 @@ Given that the consumption data consist of non-negative integers, a viable choic
 
 Based on the analysis results provided in the appendix section, we conclude that a negative binomial distributed GLMM is a better model due to its lower AIC. We suspect this improvement may be attributed to the negative binomial distribution allowing the conditional variance of the outcome variable to be greater than its conditional mean, providing greater flexibility in model fitting.
 
-To investigate whether the intervention effects are differed by sites, we propose a generalized linear model using negative binomial distribution. This model should contain the interaction term between site and intervention, the offset of total daily sales, and the day of week to account for the weekly fluctuation. The following analysis can be conducted by analyzing the coefficient of the interaction terms.
+To investigate whether the intervention effects are differed by sites, we propose a generalized linear model on a negative binomial distribution. This model should incorporate an interaction term between site and intervention.  This will allow us to discern whether the intervention impacts are indeed site-specific. In addition, we also include the day of the week, and an offset term of total daily sales in this model, which allows to normalize the effect per unit sale and account for the weekly fluctuation. The following analysis can be conducted by examining the coefficient of the interaction terms.
 
 ## Conclusions
 
-Overall, to assess the impact of various interventions on the consumption of zero calorie and sugary beverages at the three sites, we propose a GLMM with a negative binomial distribution for both variables of interest. According to the model outputs, only discount along with discount messaging has significant impact on the beverage sales. It is effective in promoting the consumption of zero calorie beverages, and counter intuitively the consumption of sugary beverages as well. Therefore, to enhance zero calorie beverage consumption, we recommend implementing a strategy that combines discounts with explicit messaging to customers. For more detailed insights, please refer to the statistical appendix.
+Overall, to assess the impact of various interventions on the consumption of zero calorie and sugary beverages at the three sites, we propose a GLMM with a negative binomial distribution for both variables of interest. According to the model outputs, only discount along with discount messaging has significant impact on the beverage sales. It is effective in promoting the consumption of zero calorie beverages, and counter intuitively the consumption of sugary beverages as well. However, the intervention by sites analysis reveals that although these intervention strategies have some effect in promoting zero calorie beverage consumption, the magnitude of the effects highly depend on sites. For more detailed insights, please refer to the statistical appendix.
 
 ## References
 
@@ -258,19 +258,19 @@ p1 = ggplot(zero_glm_result, aes(x = intervention, y = percentage_effect, fill =
 sugary_glm_result <- data.frame(
   site = rep(c('chop', 'HF', 'NS'), 5),
   intervention = rep(c('both', 'cal', 'dis', 'dismes', 'exer'), each = 3),
-  Estimate = c(0.197987, 0.112814,
-               -0.163545, 0.292919, 0.082066, -0.178256, 0.297091, -0.132208,
-               -0.101400, 0.263538, -0.142257, 0.583786, 0.234858, 0.017126,
-               0.091903),
-  Std.Error = c(0.104370, 0.105273,
-                 0.105756, 0.104323, 0.105238, 0.105937, 0.104387, 0.105700,
-                 0.105765, 0.104378, 0.105623, 0.104731, 0.104383, 0.106071,
-                 0.106241),
-  Pr = c(0.05783, 0.28389, 0.12200, 0.00499, 0.43550, 0.09244, 0.00443,
+  percentage_effect = c(19.7987, 11.2814,
+               -16.3545, 29.2919, 8.2066, -17.8256, 29.7091, -13.2208,
+               -10.1400, 26.3538, -14.2257, 58.3786, 23.4858, 1.7126,
+               9.1903),
+  se = c(10.4370, 10.5273,
+                 10.5756, 10.4323, 10.5238, 10.5937, 10.4387, 10.5700,
+                 10.5765, 10.4378, 10.5623, 10.4731, 10.4383, 10.6071,
+                 10.6241),
+  p_value = c(0.05783, 0.28389, 0.12200, 0.00499, 0.43550, 0.09244, 0.00443,
   0.21101,0.33770,0.01157, 0.17803, 2.49e-08, 0.02445, 0.87173, 0.38701))
 
 
-p2 = ggplot(zero_glm_result, aes(x = intervention, y = percentage_effect, fill = site)) +
+p2 = ggplot(sugary_glm_result, aes(x = intervention, y = percentage_effect, fill = site)) +
   geom_bar(stat='identity', position=position_dodge(width=0.8), width=0.7) +
   geom_errorbar(aes(ymin = percentage_effect - se, ymax = percentage_effect + se),
                 position=position_dodge(width=0.8), width=0.25) +
@@ -282,8 +282,4 @@ p2 = ggplot(zero_glm_result, aes(x = intervention, y = percentage_effect, fill =
 
 grid.arrange(p1, p2, ncol = 2)
 ```
-
-```{r, echo = FALSE}
-
-```
-
+From the above plots, we conclude that the intervention methods have different effects at the three sites. The differing impacts of interventions across sites may suggest underlying demographic differences. These could be in terms of age, income, health consciousness, or other socio-cultural factors that influence purchasing behaviors. This highlights the necessity for customized strategies that consider the unique demographic and behavioral profiles of different populations.
