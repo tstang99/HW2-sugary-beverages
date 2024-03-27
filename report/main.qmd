@@ -234,7 +234,7 @@ As shown in equation \ref{eq3}, the GLM model uses a logarithmic link function o
 \end{equation}
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r figs, warnings = FALSE, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Coefficient Plot"}
 library(gridExtra)
 
 zero_glm_result <- data.frame(
