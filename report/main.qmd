@@ -10,13 +10,13 @@ author: Ivy Liu, Zefan Liu, Tom Tang
 
 ## Introduction
 
-Zero calorie beverages are healthier compared to sugared beverages because they contain less sugar and significantly fewer calories. Over the past decades, hospitals have been striving to promote zero calorie beverages for a healthier lifestyle. This study employs five interventions to help increase such promotion. These interventions include a 10% price discount, a price discount combined with messaging that explains the reason for the discount, messaging displaying the caloric content in sugared beverages, messaging indicating the amount of exercise needed to burn off the calories in a sugared beverage, and messaging containing both caloric content and the amount of physical activity needed.
+Zero calorie beverages are healthier compared to sugared beverages because they contain less sugar and significantly fewer calories. Over the past decades, hospitals have been striving to promote zero-calorie beverages for a healthier lifestyle. This study employs five interventions to help increase such promotion. These interventions include a 10% price discount, a price discount combined with messaging that explains the reason for the discount, messaging displaying the caloric content in sugared beverages, messaging indicating the amount of exercise needed to burn off the calories in a sugared beverage, and messaging containing both caloric content and the amount of physical activity needed.
 
 The study aims to investigate whether these interventions help encourage people to choose zero calorie beverages over sugared beverages and if such effects varies across hospitals.
 
 ## Data description and summaries
 
-This is a quasi-experimental design where data are collected over 30 weeks, from October 27 to May 23, with a follow-up period of 14 days, gathered from two urban hospitals and one suburban hospital. During this time period, the sales of different types of drinks are recorded (see Table \ref{tab1}).
+This is an experimental design where data are collected over 30 weeks, from October 27 to May 23, with a follow-up period of 14 days, gathered from two urban hospitals and one suburban hospital. During this time period, the sales of different types of drinks are recorded (see Table \ref{tab1}).
 
 ```{=tex}
 \begin{table}[htbp]
@@ -41,7 +41,7 @@ This is a quasi-experimental design where data are collected over 30 weeks, from
     \end{tabular}
 \end{table}
 ```
-There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. Since neither these measurements themselves nor their links with the consumption of zero calorie and sugary beverages are the main focus of the study, the missing values in these columns should not be given specific attention. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period and two isolated cases of missing entries. Such occurrences could be due to public holidays or temporary closures for renovation. In general, such missing data can be classified as missing at random.
+There are missing entries in this dataset, with a significant portion of the missing data attributed to the 'Juice100,' 'Ojuice,' and 'Sports' columns. Since neither these measurements themselves nor their links with the consumption of ZeroCal/Sugary beverages are the main focus of the study, the missing values in these columns should not be given specific attention. Additionally, there are seven entirely missing consecutive entries at HF hospital during the follow-up period and two isolated cases of missing entries. Such occurrences could be due to public holidays or temporary closures for renovation. In general, such missing data can be classified as missing at random.
 
 ## Exploratory Data Analysis
 
@@ -55,7 +55,7 @@ data <- filter(data, Total > 0)
 data <- data[,-c(7,8,9)]
 ```
 
-Firstly, to address the influence of location on zero calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how they vary across the three sites. Based on Figure \ref{fig:figs}, it is evident that the time-series data for zero calorie beverage consumption at the site "chop" are significantly higher than those at the other two sites, suggesting substantial variation in consumption distributions under different interventions. Additionally, the spaghetti plot reveals that except for the initial period at the site "HF," there is no apparent trend at all three sites, as the long-term averages seem to be stable. However, strong weekly variations are evident, implying that it is reasonable to include the day of the week and exclude the time in the model.
+Firstly, to address the influence of location on zero-calorie beverage consumption, which is of primary interest to the study, a spaghetti plot is recommended. A spaghetti plot is typically used to demonstrate the change of multiple flows over time and how they vary across the three sites. Based on Figure \ref{fig:figs}, it is evident that the time-series data for zero-calorie beverage consumption at the site "chop" are significantly higher than those at the other two sites, suggesting substantial variation in consumption distributions under different interventions. Additionally, the spaghetti plot reveals that except for the initial period at the site "HF," there is no apparent trend at all three sites, as the long-term averages seem to be stable. However, strong weekly variations are evident, implying that it is reasonable to include the day of the week (DofW) and exclude the time (count) in the model.
 
 ```{r figs, warnings = FALSE, echo=FALSE, fig.width=7,fig.height=4,fig.cap="\\label{fig:figs}Examples of Recommended EDA Plots"}
 ggplot(data = data, aes(x = Count, y = ZeroCal, group = Site, color = Site)) +
@@ -82,7 +82,7 @@ It is recommended to implement a Generalized Linear Mixed Model (GLMM) to addres
 
 In this study, our primary purpose is to examine the impacts of various interventions. Hence, it is advisable to consider the intervention variable as a fixed effect. Furthermore, Day of Week should also be treated as a fixed effect, since they are consistent across all three sites. The random effect in this analysis should be Site, which accounts for variability in the observations over time. Although the total consumption volume is a plausible predictor for both variables of interest, it is more fitting to incorporate it as an offset term in the model. This approach ensures that its influence on the model is "structural," with a fixed coefficient of one, reflecting its proportional effect on the response variables.
 
-Given that the consumption data consist of non-negative integers, a viable choice for the link function is the logarithm transformation applied to the ZeroCal, Sugary, and Total variables. This transformation ensures that the model's outputs remain positive, aligning with the nature of the consumption data. Hence, the proposed models are in Equation \ref{eq1} and \ref{eq2}. Note that the response variables can be assumed to follow either Poisson or Negative Binomial distribution using log link function. 
+Given that the consumption data consist of non-negative integers, a viable choice for the link function is the logarithm transformation applied to the ZeroCal, Sugary, and Total variables. This transformation ensures that the model's outputs remain positive, aligning with the nature of the consumption data. Hence, the proposed models are in Equation \ref{eq1} and \ref{eq2}. Note that the response variables can be assumed to follow either Poisson or Negative Binomial distribution using log link function.
 
 Based on the analysis results provided in the appendix section, we conclude that a negative binomial distributed GLMM is a better model due to its lower AIC. We suspect this improvement may be attributed to the negative binomial distribution allowing the conditional variance of the outcome variable to be greater than its conditional mean, providing greater flexibility in model fitting.
 
@@ -217,5 +217,4 @@ Calorie + exercise equivalent messaging & -1.96\% & 3.30\%  & 0.55\\
 \end{tabular}
 \end{table}
 ```
-
 Based on the two tables above, the Generalized Mixed Effect Models with the assumption that the response variables follow a negative binomial distribution outperform other models in terms of the Akaike Information Criterion (AIC), a widely used criterion for model selection. For zero-calorie beverage consumption, the model indicates that only the "discount+messaging" intervention has a statistically significant effect. Similarly, for sugary beverage consumption, the effect of the "discount+messaging" intervention is also significant. Additionally, the effects associated with "DofW=6" (Saturday) and "DofW=7" (Sunday) are significant, suggesting that, on average, sugary beverage consumption may vary between weekdays and weekends.
